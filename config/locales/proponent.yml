@@ -1,0 +1,16 @@
+pt-BR:
+  activerecord:
+    models:
+      user:
+        one: "Proponente"
+        other: "Proponentes"
+
+    attributes:
+      proponent:
+        name: "Nome"
+        cpf: "CPF"
+        birth_date: "Data de Nascimento"
+        residential_phone: "Telefone Residencial"
+        mobile_phone: "Telefone Celular"
+        salary: "Salário"
+        user: "Usuário"

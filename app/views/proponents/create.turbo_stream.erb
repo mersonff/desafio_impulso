@@ -1,0 +1,3 @@
+<%= turbo_stream.prepend "proponents", @proponent %>
+<%= turbo_stream.update Proponent.new, "" %>
+<%= turbo_stream.prepend "flash", partial: "layouts/flash" %>

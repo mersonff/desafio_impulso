@@ -1,0 +1,41 @@
+.container
+  .row.justify-content-center.align-items-center.min-vh-100
+    .col-lg-4
+      h2 Edit #{resource_name.to_s.humanize}
+
+      = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: 'my-4' }) do |f|
+        = render "devise/shared/error_messages", resource: resource
+
+        .form-group
+          = f.label :email
+          br
+          = f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control'
+
+        - if devise_mapping.confirmable? && resource.pending_reconfirmation?
+          div Aguardando confirmação para: #{resource.unconfirmed_email}
+
+        .form-group
+          = f.label :password
+          | (deixe em branco se não quiser mudar)
+          br
+          = f.password_field :password, autocomplete: "new-password", class: 'form-control'
+
+        .form-group
+          = f.label :password_confirmation
+          br
+          = f.password_field :password_confirmation, autocomplete: "new-password", class: 'form-control'
+
+        .form-group
+          = f.label :current_password
+          | (nós precisamos da sua senha atual para confirmar suas mudanças)
+          br
+          = f.password_field :current_password, autocomplete: "current-password", class: 'form-control'
+
+        .form-group
+          = f.submit "Update", class: 'btn btn-primary btn-block'
+
+      h3 Cancelar conta
+
+      div Não está feliz? #{button_to "Cancelar conta", registration_path(resource_name), data: { confirm: "Tem certeza?", turbo_confirm: "Tem certeza?" }, method: :delete}
+
+      = link_to "Voltar", :back

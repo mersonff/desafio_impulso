@@ -1,0 +1,40 @@
+<%= simple_form_for proponent, data: { controller: 'flatpickr' } do |form| %>
+  <% if proponent.errors.any? %>
+    <div id="error_explanation" class="alert alert-danger">
+      <h4>Existem erros no formulário:</h4>
+      <ul>
+        <% proponent.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.input :name %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :cpf, input_html: { data: { controller: 'mask', mask_type_value: "cpf" } } %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :birth_date, as: :string, input_html: { class: 'fp_date form-control' } %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :residential_phone %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :mobile_phone %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :salary, as: :string, input_html: { data: { controller: 'mask', mask_type_value: "currency" } } %>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Salvar</button>
+  <%= link_to 'Voltar', root_path, class: 'btn btn-light' %>
+<% end %>
+<br>

@@ -1,0 +1,25 @@
+= turbo_frame_tag proponent do
+  .card
+    .card-body
+      .card-title
+        h5
+          = proponent.name
+      .card-text
+        .row
+          .col-12
+            p = proponent.cpf
+            p = l proponent.birth_date if proponent.birth_date.present?
+            p = proponent.residential_phone
+            p = proponent.mobile_phone
+            p
+              strong Salary:
+              = number_to_currency(proponent.salary)
+
+            .mb-4
+
+            .mt-4
+              .btn-group
+                = link_to 'Edit', edit_proponent_path(proponent), class: 'btn btn-primary mr-2'
+                = link_to 'Show', proponent_path(proponent), class: 'btn btn-secondary'
+                = button_to "Delete", proponent_path(proponent), method: :delete, class: "btn btn-danger", method: :delete
+  br

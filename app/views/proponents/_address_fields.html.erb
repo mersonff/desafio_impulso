@@ -1,0 +1,38 @@
+<br>
+<div class="nested-form-wrapper" data-new-record="<%= f.object.new_record? %>">
+  <div class="form-group">
+    <%= f.label :street %>
+    <%= f.text_field :street, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :number %>
+    <%= f.text_field :number, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :neighborhood %>
+    <%= f.text_field :neighborhood, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :city %>
+    <%= f.text_field :city, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :state %>
+    <%= f.text_field :state, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :zip_code %>
+    <%= f.text_field :zip_code, class: 'form-control' %>
+  </div>
+  <br>
+
+  <div class="d-flex justify-content-between align-items-center">
+    <%= f.hidden_field :_destroy %>
+    <button type="button" class="btn btn-danger" data-action="nested-form#remove">Remover Endereço</button>
+  </div>
+</div>

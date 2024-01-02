@@ -1,0 +1,18 @@
+- if user_signed_in?
+  nav.navbar.navbar-expand-lg.navbar-light.bg-light(style="margin-bottom: 20px")
+    .container-fluid
+      = link_to root_path, class: 'navbar-brand' do
+        | DasafioImpulso
+
+      button.navbar-toggler type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
+        span.navbar-toggler-icon
+
+      .collapse.navbar-collapse#navbarNav
+        ul.navbar-nav
+          li.nav-item
+            = link_to 'Início', root_path, class: 'nav-link'
+
+      ul.navbar-nav
+        li.nav-item
+          = form_tag destroy_user_session_path, method: :delete, class: 'd-flex' do
+            button.btn.btn-link.nav-link(type="submit") Log out

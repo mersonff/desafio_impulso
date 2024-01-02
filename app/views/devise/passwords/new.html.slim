@@ -1,0 +1,17 @@
+.container
+  .row.justify-content-center.align-items-center.min-vh-100
+    .col-lg-4
+      h2 Esqueceu sua senha?
+
+      = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: 'my-4' }) do |f|
+        = render "devise/shared/error_messages", resource: resource
+
+        .form-group
+          = f.label :email
+          br
+          = f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control'
+          br
+        .form-group
+          = f.submit "Me envie instruções para resetar a senha", class: 'btn btn-primary btn-block'
+
+      = render "devise/shared/links"
