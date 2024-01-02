@@ -19,6 +19,7 @@ pt-BR:
         salary: "Salário: "
         user: "Usuário: "
         last_address: "Último Endereço"
+        proponent_report: "Relatório de Proponentes"
 
     attributes:
       proponent:
@@ -29,3 +30,4 @@ pt-BR:
         mobile_phone: "Telefone Celular"
         salary: "Salário"
         user: "Usuário"
+

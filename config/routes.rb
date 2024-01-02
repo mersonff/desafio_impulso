@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   resources :proponents, except: [:show] do
     resources :addresses, except: [:show, :index]
+    get "report_data", on: :collection
+    get "report", on: :collection
   end
   root to: "proponents#index"
 end

@@ -51,7 +51,7 @@
 
   <button type="button" data-action="nested-form#add" style="margin-bottom: 1em;" class="btn btn-secondary">Adicionar Endereço</button>
   <br>
-  <button type="submit" class="btn btn-primary">Salvar</button>
-  <%= link_to 'Voltar', root_path, class: 'btn btn-light' %>
+  <%= form.button :submit, class: 'btn btn-primary' %>
+  <%= link_to t('helpers.back'), root_path, class: 'btn btn-light' %>
 <% end %>
 <br>

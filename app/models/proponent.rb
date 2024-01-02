@@ -36,4 +36,15 @@ class Proponent < ApplicationRecord
   def last_address
     addresses.order(created_at: :desc).first
   end
+
+  class << self
+    def data_for_chart
+      [
+        Proponent.where(salary: 0..1045).count,
+        Proponent.where(salary: 1045.01..2089.60).count,
+        Proponent.where(salary: 2089.61..3134.40).count,
+        Proponent.where(salary: 3134.41..6101.06).count,
+      ]
+    end
+  end
 end

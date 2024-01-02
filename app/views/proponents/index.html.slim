@@ -12,7 +12,9 @@
       = render "proponents/empty_state"
 
   = turbo_frame_tag "proponents"
-    = render @proponents
+    .row
+      .col-12
+        = render @proponents
 
     br
     .d-flex.justify-content-center
