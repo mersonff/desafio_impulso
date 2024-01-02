@@ -13,7 +13,13 @@ const maskOptions = {
     padFractionalZeros: true,
     min: -9999999999,
     max: 9999999999
-  }
+  },
+  phone: {
+    mask: "(00) 0000-0000"
+  },
+  mobile: {
+    mask: "(00) 00000-0000"
+  },
 }
 
 export default class extends Controller {

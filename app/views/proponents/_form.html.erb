@@ -24,11 +24,11 @@
   </div>
 
   <div class="form-group">
-    <%= form.input :residential_phone %>
+    <%= form.input :residential_phone, input_html: { data: { controller: 'mask', mask_type_value: "phone" } } %>
   </div>
 
   <div class="form-group">
-    <%= form.input :mobile_phone %>
+    <%= form.input :mobile_phone, input_html: { data: { controller: 'mask', mask_type_value: "mobile" } } %>
   </div>
 
   <div class="form-group">

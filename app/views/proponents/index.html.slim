@@ -7,7 +7,9 @@
 
   = link_to t('activerecord.models.proponent.new'), new_proponent_path, class: 'btn btn-primary mb-4', data: { turbo_frame: dom_id(Proponent.new) }
 
-  = turbo_frame_tag Proponent.new
+  = turbo_frame_tag Proponent.new do
+    - unless current_user.proponents.any?
+      = render "proponents/empty_state"
 
   = turbo_frame_tag "proponents"
     = render @proponents

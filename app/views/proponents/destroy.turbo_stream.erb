@@ -1,2 +1,8 @@
 <%= turbo_stream.remove @proponent %>
 <%= render_turbo_stream_flash_messages %>
+
+<% unless current_user.proponents.exists? %>
+  <%= turbo_stream.update Proponent.new do %>
+    <%= render "proponents/empty_state" %>
+  <% end %>
+<% end %>

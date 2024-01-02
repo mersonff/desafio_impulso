@@ -148,6 +148,7 @@ pt-BR:
   helpers:
     messages:
       confirmation: Tem certeza?
+      empty_state: Não há %{model} cadastrados
     select:
       prompt: Por favor selecione
     submit:
