@@ -13,6 +13,8 @@ class Proponent < ApplicationRecord
 
   broadcasts_to ->(_proponent) { "proponents" }, inserts_by: :prepend
 
+  default_scope { order(name: :asc) }
+
   def residential_phone
     phones&.first
   end

@@ -186,6 +186,9 @@ GEM
       activerecord
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
+    kaminari-i18n (0.5.0)
+      kaminari
+      rails
     language_server-protocol (3.17.0.3)
     launchy (2.5.2)
       addressable (~> 2.8)
@@ -432,6 +435,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   kaminari (~> 1.2)
+  kaminari-i18n (~> 0.5.0)
   letter_opener
   pg (~> 1.1)
   pry-rails

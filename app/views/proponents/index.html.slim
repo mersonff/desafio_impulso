@@ -1,17 +1,19 @@
 .container.mt-4
-  h1 Proponents
+  h1
+    = t 'activerecord.models.proponent.other'
 
-  = turbo_stream_from current_user "proponents"
+  = turbo_stream_from current_user, "proponents"
 
 
-  = link_to 'New Proponent', new_proponent_path, class: 'btn btn-primary mb-4', data: { turbo_frame: dom_id(Proponent.new) }
+  = link_to t('activerecord.models.proponent.new'), new_proponent_path, class: 'btn btn-primary mb-4', data: { turbo_frame: dom_id(Proponent.new) }
 
   = turbo_frame_tag Proponent.new
 
   = turbo_frame_tag "proponents"
     = render @proponents
 
-  br
-  .d-flex.justify-content-center
-    = paginate @proponents, theme: 'bootstrap-5'
+    br
+    .d-flex.justify-content-center
+      = paginate @proponents, theme: 'bootstrap-5', params: { turbo_frame: 'proponents' }
+
 

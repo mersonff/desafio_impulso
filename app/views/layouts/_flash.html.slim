@@ -1,3 +1,4 @@
 - flash.each do |flash_type, message|
-  .alert class="alert alert-#{flash_type}" role="alert"
+  .alert.alert-dismissible.fade.show(class= "alert-#{bootstrap_flash_class(flash_type)}" role= "alert" data-controller="removals" data-action="animationend->removals#remove")
     = message
+    button.btn-close data-bs-dismiss="alert" aria-label="Close" type="button"

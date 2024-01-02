@@ -1,2 +1,13 @@
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
+
+.alert {
+  animation: slideOut 4s ease-out;
+}
+
+@keyframes slideOut {
+  to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}

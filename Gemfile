@@ -60,3 +60,5 @@ gem "turbo-rails"
 gem "tzinfo-data", platforms: [:windows, :jruby]
 
 gem "bootstrap5-kaminari-views", "~> 0.0.1"
+
+gem "kaminari-i18n", "~> 0.5.0"

@@ -1,9 +1,13 @@
 pt-BR:
   activerecord:
     models:
-      user:
+      proponent:
         one: "Proponente"
         other: "Proponentes"
+        new: "Novo Proponente"
+        edit: "Editar"
+        show: "Exibir"
+        delete: "Excluir"
 
     attributes:
       proponent:

@@ -2,24 +2,36 @@
   .card
     .card-body
       .card-title
-        h5
-          = proponent.name
+        h5.text-center
+          strong
+            = proponent.name
       .card-text
         .row
-          .col-12
-            p = proponent.cpf
-            p = l proponent.birth_date if proponent.birth_date.present?
-            p = proponent.residential_phone
-            p = proponent.mobile_phone
+          .col-11
             p
-              strong Salary:
+              strong CPF:&nbsp;
+              = proponent.cpf
+            p
+              strong Data de nascimento:&nbsp;
+              = l proponent.birth_date if proponent.birth_date.present?
+            p
+              strong Telefone residencial:&nbsp;
+              = proponent.residential_phone
+            p
+              strong Telefone celular:&nbsp;
+              = proponent.mobile_phone
+            p
+              strong Salário:&nbsp;
               = number_to_currency(proponent.salary)
 
             .mb-4
-
+          .col-1
             .mt-4
-              .btn-group
-                = link_to 'Edit', edit_proponent_path(proponent), class: 'btn btn-primary mr-2'
-                = link_to 'Show', proponent_path(proponent), class: 'btn btn-secondary'
-                = button_to "Delete", proponent_path(proponent), method: :delete, class: "btn btn-danger", method: :delete
+              .btn-group-vertical
+                = link_to edit_proponent_path(proponent), class: 'btn btn-primary mr-2' do
+                  i.bi.bi-pencil
+                = link_to proponent_path(proponent), class: 'btn btn-secondary' do
+                  i.bi.bi-eye
+                = button_to proponent_path(proponent), method: :delete, class: "btn btn-danger", style:"border-top-left-radius: 0;border-top-right-radius: 0;", data: { controller: 'confirmation', confirm: "#{t('helpers.messages.confirmation')}" } do
+                  i.bi.bi-trash
   br
