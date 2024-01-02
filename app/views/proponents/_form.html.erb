@@ -32,7 +32,11 @@
   </div>
 
   <div class="form-group">
-    <%= form.input :salary, as: :string, input_html: { data: { controller: 'mask', mask_type_value: "currency" } } %>
+    <%= form.input :salary, as: :string, input_html: { data: { controller: 'mask calculate-discount', mask_type_value: "currency", action: "input->calculate-discount#calculate" } } %>
+  </div>
+
+  <div class="form-group">
+    <%= form.input :inss_discount, as: :string, readonly: true, class: 'with-spinner' %>
   </div>
 
   <h3>Endereços</h3>

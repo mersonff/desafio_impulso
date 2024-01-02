@@ -5,8 +5,11 @@ Rails.application.routes.draw do
 
   resources :proponents, except: [:show] do
     resources :addresses, except: [:show, :index]
-    get "report_data", on: :collection
-    get "report", on: :collection
+    collection do
+      get "report_data"
+      get "report"
+      get "calculate_inss_discount"
+    end
   end
   root to: "proponents#index"
 end

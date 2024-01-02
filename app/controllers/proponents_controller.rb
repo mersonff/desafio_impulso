@@ -95,6 +95,14 @@ class ProponentsController < ApplicationController
     @values = Proponent.data_for_chart
   end
 
+  def calculate_inss_discount
+    CalculateDiscountJob.perform_async(params[:salary])
+
+    render(json: {
+      message: "Calculando desconto em segundo plano...",
+    })
+  end
+
   private
 
   def set_proponent
