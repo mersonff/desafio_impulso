@@ -3,13 +3,10 @@
 # app/controllers/proponents_controller.rb
 
 class ProponentsController < ApplicationController
-  before_action :set_proponent, only: [:show, :edit, :update, :destroy]
+  before_action :set_proponent, only: [:edit, :update, :destroy]
 
   def index
     @proponents = Proponent.page(params[:page]).per(5)
-  end
-
-  def show
   end
 
   def new
@@ -23,8 +20,15 @@ class ProponentsController < ApplicationController
 
     respond_to do |format|
       if @proponent.save
-        format.html { redirect_to(proponents_path, notice: "Proponent was successfully created.") }
-        format.turbo_stream { flash.now[:notice] = "Proponent was successfully created." }
+        format.html do
+          redirect_to(
+            proponents_path,
+            notice: t("flash.actions.create.notice", resource_name: Proponent.model_name.human),
+          )
+        end
+        format.turbo_stream do
+          flash.now[:notice] = t("flash.actions.create.notice", resource_name: Proponent.model_name.human)
+        end
       else
         render(:new, status: :unprocessable_entity)
       end
@@ -38,8 +42,15 @@ class ProponentsController < ApplicationController
     salary = params[:proponent][:salary].delete(".").tr(",", ".")
     respond_to do |format|
       if @proponent.update(proponent_params.merge(salary: salary))
-        format.html { redirect_to(proponents_path, notice: "Proponent was successfully updated.") }
-        format.turbo_stream { flash.now[:notice] = "Proponent was successfully updated." }
+        format.html do
+          redirect_to(
+            proponents_path,
+            notice: t("flash.actions.update.notice", resource_name: Proponent.model_name.human),
+          )
+        end
+        format.turbo_stream do
+          flash.now[:notice] = t("flash.actions.update.notice", resource_name: Proponent.model_name.human)
+        end
       else
         render(:edit, status: :unprocessable_entity)
       end
@@ -50,8 +61,15 @@ class ProponentsController < ApplicationController
     @proponent.destroy
 
     respond_to do |format|
-      format.html { redirect_to(proponents_path, notice: "Proponent was successfully destroyed.") }
-      format.turbo_stream { flash.now[:notice] = "Proponent was successfully destroyed." }
+      format.html do
+        redirect_to(
+          proponents_path,
+          notice: t("flash.actions.destroy.notice", resource_name: Proponent.model_name.human),
+        )
+      end
+      format.turbo_stream do
+        flash.now[:notice] = t("flash.actions.destroy.notice", resource_name: Proponent.model_name.human)
+      end
     end
   end
 

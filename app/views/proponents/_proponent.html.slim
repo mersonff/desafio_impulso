@@ -9,19 +9,23 @@
         .row
           .col-11
             p
-              strong CPF:&nbsp;
+              strong= I18n.t('activerecord.labels.proponent.cpf')
               = proponent.cpf
+
             p
-              strong Data de nascimento:&nbsp;
+              strong= I18n.t('activerecord.labels.proponent.birth_date')
               = l proponent.birth_date if proponent.birth_date.present?
+
             p
-              strong Telefone residencial:&nbsp;
+              strong= I18n.t('activerecord.labels.proponent.residential_phone')
               = proponent.residential_phone
+
             p
-              strong Telefone celular:&nbsp;
+              strong= I18n.t('activerecord.labels.proponent.mobile_phone')
               = proponent.mobile_phone
+
             p
-              strong Salário:&nbsp;
+              strong= I18n.t('activerecord.labels.proponent.salary')
               = number_to_currency(proponent.salary)
 
             .mb-4
@@ -30,8 +34,6 @@
               .btn-group-vertical
                 = link_to edit_proponent_path(proponent), class: 'btn btn-primary mr-2' do
                   i.bi.bi-pencil
-                = link_to proponent_path(proponent), class: 'btn btn-secondary' do
-                  i.bi.bi-eye
                 = button_to proponent_path(proponent), method: :delete, class: "btn btn-danger", style:"border-top-left-radius: 0;border-top-right-radius: 0;", data: { controller: 'confirmation', confirm: "#{t('helpers.messages.confirmation')}" } do
                   i.bi.bi-trash
   br

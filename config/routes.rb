@@ -3,6 +3,6 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  resources :proponents
+  resources :proponents, except: [:show]
   root to: "proponents#index"
 end

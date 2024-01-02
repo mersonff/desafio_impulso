@@ -9,6 +9,16 @@ pt-BR:
         show: "Exibir"
         delete: "Excluir"
 
+    labels:
+      proponent:
+        name: "Nome: "
+        cpf: "CPF: "
+        birth_date: "Data de Nascimento: "
+        residential_phone: "Telefone Residencial: "
+        mobile_phone: "Telefone Celular: "
+        salary: "Salário: "
+        user: "Usuário: "
+
     attributes:
       proponent:
         name: "Nome"
