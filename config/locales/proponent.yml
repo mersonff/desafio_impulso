@@ -18,6 +18,7 @@ pt-BR:
         mobile_phone: "Telefone Celular: "
         salary: "Salário: "
         user: "Usuário: "
+        last_address: "Último Endereço"
 
     attributes:
       proponent:

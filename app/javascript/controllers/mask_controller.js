@@ -20,6 +20,9 @@ const maskOptions = {
   mobile: {
     mask: "(00) 00000-0000"
   },
+  zip_code: {
+    mask: "00000-000"
+  },
 }
 
 export default class extends Controller {

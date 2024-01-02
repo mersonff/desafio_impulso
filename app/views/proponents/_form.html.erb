@@ -1,4 +1,4 @@
-<%= simple_form_for proponent, data: { controller: 'flatpickr' } do |form| %>
+<%= simple_form_for proponent, data: { controller: 'flatpickr nested-form', nested_form_wrapper_selector_value: '.nested-form-wrapper' } do |form| %>
   <%= title_for(proponent) %>
   <% if proponent.errors.any? %>
     <div id="error_explanation" class="alert alert-danger">
@@ -35,6 +35,22 @@
     <%= form.input :salary, as: :string, input_html: { data: { controller: 'mask', mask_type_value: "currency" } } %>
   </div>
 
+  <h3>Endereços</h3>
+
+  <template data-nested-form-target="template">
+    <%= form.fields_for :addresses, Address.new, child_index: 'NEW_RECORD' do |addresse_fields| %>
+      <%= render "address_form", f: addresse_fields %>
+    <% end %>
+  </template>
+
+  <%= form.fields_for :addresses do |addresse_fields| %>
+    <%= render "address_form", f: addresse_fields %>
+  <% end %>
+
+  <div data-nested-form-target="target"></div>
+
+  <button type="button" data-action="nested-form#add" style="margin-bottom: 1em;" class="btn btn-secondary">Adicionar Endereço</button>
+  <br>
   <button type="submit" class="btn btn-primary">Salvar</button>
   <%= link_to 'Voltar', root_path, class: 'btn btn-light' %>
 <% end %>

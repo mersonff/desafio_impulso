@@ -1,0 +1,33 @@
+<br>
+<div class="nested-form-wrapper" data-new-record="<%= f.object.new_record? %>">
+  <div class="form-group">
+    <%= f.input :zip_code, input_html: { data: { controller: 'mask search-address', mask_type_value: "zip_code", action: "input->search-address#search" } } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :street %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :number %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :neighborhood %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :city %>
+  </div>
+
+  <div class="form-group">
+    <%= f.input :state %>
+  </div>
+
+  <br>
+
+  <div class="d-flex justify-content-between align-items-center">
+    <%= f.hidden_field :_destroy %>
+    <button type="button" class="btn btn-danger" data-action="nested-form#remove" style="margin-bottom: 1em;">Remover Endereço</button>
+  </div>
+</div>

@@ -7,7 +7,7 @@
             = proponent.name
       .card-text
         .row
-          .col-11
+          .col-6
             p
               strong= I18n.t('activerecord.labels.proponent.cpf')
               = proponent.cpf
@@ -28,7 +28,14 @@
               strong= I18n.t('activerecord.labels.proponent.salary')
               = number_to_currency(proponent.salary)
 
+          .col-5
+            p
+              strong= I18n.t('activerecord.labels.proponent.last_address')
+              br
+              = proponent.last_address
+
             .mb-4
+
           .col-1
             .mt-4
               .btn-group-vertical

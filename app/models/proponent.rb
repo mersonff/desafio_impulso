@@ -32,4 +32,8 @@ class Proponent < ApplicationRecord
     self.phones ||= []
     self.phones[1] = value
   end
+
+  def last_address
+    addresses.order(created_at: :desc).first
+  end
 end
