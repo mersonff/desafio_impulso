@@ -113,9 +113,12 @@ RSpec.describe(ProponentsController, type: :request) do
   end
 
   describe "GET /calculate_inss_discount" do
-    it "returns http success" do
-      get(calculate_inss_discount_proponents_path)
-      expect(response).to(have_http_status(:success))
+    it "returns http success", :aggregate_failures do
+      get(calculate_inss_discount_proponents_path, headers: { "Accept": "application/json" })
+      expect(response).to(have_http_status(:ok))
+
+      Sidekiq::Testing.fake! { get(calculate_inss_discount_proponents_path) }
+      expect(CalculateDiscountJob.jobs.size).to(eq(1))
     end
   end
 end
