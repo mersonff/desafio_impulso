@@ -16,7 +16,6 @@ WORKDIR /desafio_impulso
 COPY . ./
 
 RUN gem install bundler -v $BUNDLER_VERSION \
-  && gem install mailcatcher \
   && bundle config build.nokogiri --use-system-libraries \
   && bundle config set --local without 'production' \
   && bundle install

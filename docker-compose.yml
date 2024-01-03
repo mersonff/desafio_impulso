@@ -22,6 +22,23 @@ services:
       - desafio_impulso-redis:/var/lib/redis/data
     command: 'redis-server'
 
+  sidekiq:
+    container_name: desafio_impulso-sidekiq
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: bundle exec sidekiq
+    volumes:
+      - .:/desafio_impulso
+    links:
+      - postgres
+      - redis
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+
   desafio_impulso:
     container_name: desafio_impulso-app
     build:

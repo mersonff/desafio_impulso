@@ -36,7 +36,7 @@
   </div>
 
   <div class="form-group">
-    <%= form.input :inss_discount, as: :string, readonly: true, class: 'with-spinner' %>
+    <%= form.input :inss_discount, as: :string, readonly: true, input_html: { data: { controller: 'mask', mask_type_value: "currency" } } %>
   </div>
 
   <h3>Endereços</h3>

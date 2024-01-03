@@ -10,12 +10,13 @@ class ProponentsController < ApplicationController
   end
 
   def new
-    @proponent = Proponent.new
+    @proponent = Proponent.new.decorate
   end
 
   def create
     salary = params[:proponent][:salary].delete(".").tr(",", ".")
-    @proponent = Proponent.new(proponent_params.merge(salary: salary))
+    discount = params[:proponent][:inss_discount]&.delete(".")&.tr(",", ".")
+    @proponent = Proponent.new(proponent_params.merge(salary: salary, inss_discount: discount))
     @proponent.user = current_user
 
     respond_to do |format|
@@ -40,8 +41,9 @@ class ProponentsController < ApplicationController
 
   def update
     salary = params[:proponent][:salary].delete(".").tr(",", ".")
+    discount = params[:proponent][:inss_discount]&.delete(".")&.tr(",", ".")
     respond_to do |format|
-      if @proponent.update(proponent_params.merge(salary: salary))
+      if @proponent.update(proponent_params.merge(salary: salary, inss_discount: discount))
         format.html do
           redirect_to(
             proponents_path,
@@ -106,7 +108,7 @@ class ProponentsController < ApplicationController
   private
 
   def set_proponent
-    @proponent = Proponent.find(params[:id])
+    @proponent = Proponent.find(params[:id]).decorate
   end
 
   def proponent_params
@@ -116,6 +118,7 @@ class ProponentsController < ApplicationController
       :birth_date,
       :residential_phone,
       :mobile_phone,
+      :inss_discount,
       addresses_attributes: [:id, :street, :number, :neighborhood, :city, :state, :zip_code, :_destroy],
     )
   end

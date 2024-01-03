@@ -1,0 +1,29 @@
+pt-BR:
+  activerecord:
+    models:
+      address:
+        one: "Endereço"
+        other: "Endereços"
+        new: "Novo Endereço"
+        edit: "Editar"
+        show: "Exibir"
+        delete: "Excluir"
+
+    labels:
+      address:
+        street: "Rua: "
+        number: "Número: "
+        neighborhood: "Bairro: "
+        city: "Cidade: "
+        state: "Estado: "
+        zip_code: "CEP: "
+
+    attributes:
+      address:
+        street: "Rua"
+        number: "Número"
+        neighborhood: "Bairro"
+        city: "Cidade"
+        state: "Estado"
+        zip_code: "CEP"
+
