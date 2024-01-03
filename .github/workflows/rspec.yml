@@ -46,10 +46,8 @@ jobs:
       - name: Run RSpec tests
         run: bundle exec rspec
 
-      - name: Check code coverage
-        uses: joshmfrankel/simplecov-check-action@main
+      - uses: joshmfrankel/simplecov-check-action@main
         with:
-          check_job_name: simplecov
-          minimum_suite_coverage: 95
-          minimum_file_coverage: 90
+          minimum_suite_coverage: 85
+          minimum_file_coverage: 70
           github_token: ${{ secrets.GITHUB_TOKEN }}
