@@ -100,8 +100,8 @@ RSpec.describe(ProponentsController, type: :request) do
 
   describe "GET /report_data" do
     it "returns http success" do
-      get(report_data_proponents_path)
-      expect(response).to(have_http_status(:success))
+      get(report_data_proponents_path, headers: { "Accept": "application/json" })
+      expect(response).to(have_http_status(:ok))
     end
   end
 
