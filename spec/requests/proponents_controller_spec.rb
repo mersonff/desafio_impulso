@@ -14,6 +14,11 @@ RSpec.describe(ProponentsController, type: :request) do
       get(proponents_path)
       expect(response).to(have_http_status(:success))
     end
+
+    it "returns http success when search" do
+      get(proponents_path, params: { search: "test" })
+      expect(response).to(have_http_status(:success))
+    end
   end
 
   describe "GET /new" do
