@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Searchable
   extend ActiveSupport::Concern
 
@@ -5,22 +7,6 @@ module Searchable
     include Elasticsearch::Model
     include Elasticsearch::Model::Callbacks
 
-    mappings do
-      indexes :name, type: "text"
-    end
-
-    def self.search(query)
-      params = {
-        query: {
-          multi_match: {
-            query: query,
-            fields: ["name"],
-            fuzziness: "AUTO",
-          },
-        },
-      }
-
-      __elasticsearch__.search(params).records.to_a
-    end
+    import(force: true) unless Rails.env.test?
   end
 end

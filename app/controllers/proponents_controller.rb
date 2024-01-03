@@ -7,7 +7,11 @@ class ProponentsController < ApplicationController
 
   def index
     query = current_user.proponents.order(name: :asc)
-    @proponents = params[:search].present? ? Kaminari.paginate_array(query.search(params[:search])).page(params[:page]).per(5) : query.page(params[:page]).per(5)
+    @proponents = if params[:search].present?
+      Kaminari.paginate_array(query.search(params[:search])).page(params[:page]).per(5)
+    else
+      query.page(params[:page]).per(5)
+    end
   end
 
   def new
