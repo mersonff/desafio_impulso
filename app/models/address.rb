@@ -6,6 +6,6 @@ class Address < ApplicationRecord
   validates :zip_code, presence: true
 
   def to_s
-    "#{street}, #{number} - #{neighborhood}, #{city}/#{state}"
+    "#{street}, #{number} - #{neighborhood}, #{city}/#{state}, #{zip_code}"
   end
 end

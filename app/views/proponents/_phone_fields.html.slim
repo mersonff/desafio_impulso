@@ -1,8 +1,0 @@
-.nested-form-wrapper(data-new-record=f.object.new_record?)
-  .form-group
-    = f.label :phone_number
-    = f.text_field :phone_number, class: 'form-control'
-
-  button(type="button" data-action="nested-form#remove") Remove todo
-
-  = f.hidden_field :_destroy

@@ -2,12 +2,12 @@
 
 FactoryBot.define do
   factory :address do
-    proponent { nil }
-    street { "MyString" }
-    number { "MyString" }
-    neighborhood { "MyString" }
-    city { "MyString" }
-    state { "MyString" }
-    zip_code { "MyString" }
+    proponent
+    street { Faker::Address.street_name }
+    number { Faker::Address.building_number }
+    neighborhood { Faker::Address.community }
+    city { Faker::Address.city }
+    state { Faker::Address.state }
+    zip_code { Faker::Address.zip_code }
   end
 end

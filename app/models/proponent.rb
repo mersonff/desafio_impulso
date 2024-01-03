@@ -6,7 +6,7 @@ class Proponent < ApplicationRecord
 
   belongs_to :user
 
-  validates :name, presence: true
+  validates :name, :salary, presence: true
   validates :cpf, presence: true, cpf: true
 
   accepts_nested_attributes_for :addresses, reject_if: :all_blank, allow_destroy: true

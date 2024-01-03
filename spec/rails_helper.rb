@@ -7,6 +7,7 @@ require_relative "../config/environment"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require "rspec/rails"
 require "simplecov"
+require "sidekiq/testing/inline"
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 
@@ -17,6 +18,8 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 
 RSpec.configure do |config|
+  config.include(Warden::Test::Helpers, type: :request)
+
   config.fixture_paths = [
     Rails.root.join("spec/fixtures"),
   ]
