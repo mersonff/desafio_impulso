@@ -36,6 +36,10 @@ rails db:create db:migrate
 
 Popular o banco de dados com o comando:
 rake dev:prime
+
+OBS: Pode ser necessário rodar os comandos do elasticsearch para criar os índices e popular com os dados do banco de dados
+Proponent.__elasticsearch__.create_index!
+Proponent.import
 ```
 
 ## Testes

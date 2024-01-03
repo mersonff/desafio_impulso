@@ -6,7 +6,8 @@ class ProponentsController < ApplicationController
   before_action :set_proponent, only: [:edit, :update, :destroy]
 
   def index
-    @proponents = Proponent.page(params[:page]).per(5)
+    query = current_user.proponents.order(name: :asc)
+    @proponents = params[:search].present? ? Kaminari.paginate_array(query.search(params[:search])).page(params[:page]).per(5) : query.page(params[:page]).per(5)
   end
 
   def new

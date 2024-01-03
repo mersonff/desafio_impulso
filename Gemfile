@@ -62,3 +62,7 @@ gem "sprockets-rails"
 gem "stimulus-rails"
 gem "turbo-rails"
 gem "tzinfo-data", platforms: [:windows, :jruby]
+
+gem "elasticsearch-model", "~> 7.2"
+
+gem "elasticsearch-rails", "~> 7.2"

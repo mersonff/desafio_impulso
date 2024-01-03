@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Proponent < ApplicationRecord
+  include Searchable
+
   serialize :phones, coder: JSON
   has_many :addresses, dependent: :destroy
 
