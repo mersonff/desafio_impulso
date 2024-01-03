@@ -7,6 +7,7 @@ env:
   RAILS_ENV: test
   DATABASE_URL: "postgres://rails:password@localhost:5432/desafio_impulso_test"
   REDIS_URL: "redis://localhost:6379/0"
+  ELASTICSEARCH_URL: "http://localhost:9200"
 
 jobs:
   rspec:
