@@ -3,13 +3,10 @@
 # app/controllers/proponents_controller.rb
 
 class ProponentsController < ApplicationController
-  before_action :set_proponent, only: [:show, :edit, :update, :destroy]
+  before_action :set_proponent, only: [:edit, :update, :destroy]
 
   def index
-    @proponents = Proponent.includes(:addresses).page(params[:page]).per(5)
-  end
-
-  def show
+    @proponents = Proponent.page(params[:page]).per(5)
   end
 
   def new
@@ -21,23 +18,16 @@ class ProponentsController < ApplicationController
     @proponent = Proponent.new(proponent_params.merge(salary: salary))
     @proponent.user = current_user
 
-    respond_to do |_format|
+    respond_to do |format|
       if @proponent.save
-        # message = I18n.t("activerecord.messages.proponent.create.success")
-        #
-        # format.html { redirect_to(proponents_path) }
-        # format.turbo_stream do
-        #   flash.now[:notice] = message
-        #   render(turbo_stream:
-        #            turbo_stream.append(
-        #              "proponents",
-        #              partial: "proponents/proponent",
-        #              locals: { proponent: @proponent },
-        #            ))
-        # end
-        respond_to do |format|
-          format.html { redirect_to(proponents_path, notice: "Proponent was successfully created.") }
-          format.turbo_stream { flash.now[:notice] = "Proponent was successfully created." }
+        format.html do
+          redirect_to(
+            proponents_path,
+            notice: t("flash.actions.create.notice", resource_name: Proponent.model_name.human),
+          )
+        end
+        format.turbo_stream do
+          flash.now[:notice] = t("flash.actions.create.notice", resource_name: Proponent.model_name.human)
         end
       else
         render(:new, status: :unprocessable_entity)
@@ -52,26 +42,17 @@ class ProponentsController < ApplicationController
     salary = params[:proponent][:salary].delete(".").tr(",", ".")
     respond_to do |format|
       if @proponent.update(proponent_params.merge(salary: salary))
-        format.html { redirect_to(proponents_path) }
-        format.turbo_stream do
-          render(turbo_stream: turbo_stream.replace(
-            @proponent,
-            partial: "proponents/show",
-            locals: { proponent: @proponent },
-          ))
-        end
-      else
-        format.html { render(:edit) }
-        format.turbo_stream do
-          render(
-            turbo_stream: turbo_stream.replace(
-              @proponent,
-              partial: "form",
-              locals: { proponent: @proponent },
-            ),
-            status: :unprocessable_entity,
+        format.html do
+          redirect_to(
+            proponents_path,
+            notice: t("flash.actions.update.notice", resource_name: Proponent.model_name.human),
           )
         end
+        format.turbo_stream do
+          flash.now[:notice] = t("flash.actions.update.notice", resource_name: Proponent.model_name.human)
+        end
+      else
+        render(:edit, status: :unprocessable_entity)
       end
     end
   end
@@ -80,9 +61,46 @@ class ProponentsController < ApplicationController
     @proponent.destroy
 
     respond_to do |format|
-      format.html { redirect_to(proponents_path, notice: "Proponent was successfully destroyed.") }
-      format.turbo_stream
+      format.html do
+        redirect_to(
+          proponents_path,
+          notice: t("flash.actions.destroy.notice", resource_name: Proponent.model_name.human),
+        )
+      end
+      format.turbo_stream do
+        flash.now[:notice] = t("flash.actions.destroy.notice", resource_name: Proponent.model_name.human)
+      end
     end
+  end
+
+  def report_data
+    render(json: {
+      labels: [
+        "Até R$ 1.045,00",
+        "De R$ 1.045,01 a R$ 2.089,60",
+        "De R$ 2.089,61 até R$ 3.134,40",
+        "De R$ 3.134,41 até R$ 6.101,06",
+      ],
+      values: Proponent.data_for_chart,
+    })
+  end
+
+  def report
+    @labels = [
+      "Até R$ 1.045,00",
+      "De R$ 1.045,01 a R$ 2.089,60",
+      "De R$ 2.089,61 até R$ 3.134,40",
+      "De R$ 3.134,41 até R$ 6.101,06",
+    ]
+    @values = Proponent.data_for_chart
+  end
+
+  def calculate_inss_discount
+    CalculateDiscountJob.perform_async(params[:salary])
+
+    render(json: {
+      message: "Calculando desconto em segundo plano...",
+    })
   end
 
   private

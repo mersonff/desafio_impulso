@@ -1,9 +1,25 @@
 pt-BR:
   activerecord:
     models:
-      user:
+      proponent:
         one: "Proponente"
         other: "Proponentes"
+        new: "Novo Proponente"
+        edit: "Editar"
+        show: "Exibir"
+        delete: "Excluir"
+
+    labels:
+      proponent:
+        name: "Nome: "
+        cpf: "CPF: "
+        birth_date: "Data de Nascimento: "
+        residential_phone: "Telefone Residencial: "
+        mobile_phone: "Telefone Celular: "
+        salary: "Salário: "
+        user: "Usuário: "
+        last_address: "Último Endereço"
+        proponent_report: "Relatório de Proponentes"
 
     attributes:
       proponent:
@@ -14,3 +30,4 @@ pt-BR:
         mobile_phone: "Telefone Celular"
         salary: "Salário"
         user: "Usuário"
+

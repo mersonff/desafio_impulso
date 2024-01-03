@@ -13,10 +13,15 @@ inherit_mode:
 
 AllCops:
   StyleGuideBaseURL: https://shopify.github.io/ruby-style-guide/
-  NewCops: disable # New cops will be triaged by style guide maintainers instead.
+  NewCops: disable
+  Exclude:
+    - 'config/initializers/devise.rb'
 
 Bundler/OrderedGems:
   Enabled: true
+
+Rspec/ExampleLength:
+  Max: 20
 
 Gemspec/DeprecatedAttributeAssignment:
   Enabled: true

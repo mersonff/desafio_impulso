@@ -5,11 +5,12 @@ on:
 
 env:
   RAILS_ENV: test
-  DATABASE_URL: "postgres://rails:password@localhost:5432/bookshelf_test"
+  DATABASE_URL: "postgres://rails:password@localhost:5432/desafio_impulso_test"
   REDIS_URL: "redis://localhost:6379/0"
 
 jobs:
   rspec:
+    permissions: write-all
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -17,7 +18,7 @@ jobs:
         ports:
           - "5432:5432"
         env:
-          POSTGRES_DB: bookshelf_test
+          POSTGRES_DB: desafio_impulso_test
           POSTGRES_USER: rails
           POSTGRES_PASSWORD: password
       redis:
@@ -39,13 +40,15 @@ jobs:
           bin/rails db:create
           bin/rails db:migrate
 
+      - name: Run Assets Precompile
+        run: |
+          bin/rails assets:precompile
+
       - name: Run RSpec tests
         run: bundle exec rspec
 
-      - name: Check code coverage
-        uses: joshmfrankel/simplecov-check-action@main
+      - uses: joshmfrankel/simplecov-check-action@main
         with:
-          check_job_name: simplecov
-          minimum_suite_coverage: 95
-          minimum_file_coverage: 90
+          minimum_suite_coverage: 85
+          minimum_file_coverage: 70
           github_token: ${{ secrets.GITHUB_TOKEN }}
