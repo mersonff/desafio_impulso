@@ -14,6 +14,11 @@ RSpec.describe(ProponentsController, type: :request) do
       get(proponents_path)
       expect(response).to(have_http_status(:success))
     end
+
+    it "returns http success when search" do
+      get(proponents_path, params: { search: "test" })
+      expect(response).to(have_http_status(:success))
+    end
   end
 
   describe "GET /new" do
@@ -95,8 +100,8 @@ RSpec.describe(ProponentsController, type: :request) do
 
   describe "GET /report_data" do
     it "returns http success" do
-      get(report_data_proponents_path)
-      expect(response).to(have_http_status(:success))
+      get(report_data_proponents_path, headers: { "Accept": "application/json" })
+      expect(response).to(have_http_status(:ok))
     end
   end
 
@@ -109,8 +114,8 @@ RSpec.describe(ProponentsController, type: :request) do
 
   describe "GET /calculate_inss_discount" do
     it "returns http success", :aggregate_failures do
-      get(calculate_inss_discount_proponents_path)
-      expect(response).to(have_http_status(:success))
+      get(calculate_inss_discount_proponents_path, headers: { "Accept": "application/json" })
+      expect(response).to(have_http_status(:ok))
 
       Sidekiq::Testing.fake! { get(calculate_inss_discount_proponents_path) }
       expect(CalculateDiscountJob.jobs.size).to(eq(1))

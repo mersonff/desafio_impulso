@@ -6,7 +6,12 @@ class ProponentsController < ApplicationController
   before_action :set_proponent, only: [:edit, :update, :destroy]
 
   def index
-    @proponents = Proponent.page(params[:page]).per(5)
+    query = current_user.proponents.order(name: :asc)
+    @proponents = if params[:search].present?
+      Kaminari.paginate_array(query.search(params[:search])).page(params[:page]).per(5)
+    else
+      query.page(params[:page]).per(5)
+    end
   end
 
   def new
@@ -76,15 +81,9 @@ class ProponentsController < ApplicationController
   end
 
   def report_data
-    render(json: {
-      labels: [
-        "Até R$ 1.045,00",
-        "De R$ 1.045,01 a R$ 2.089,60",
-        "De R$ 2.089,61 até R$ 3.134,40",
-        "De R$ 3.134,41 até R$ 6.101,06",
-      ],
-      values: Proponent.data_for_chart,
-    })
+    respond_to do |format|
+      format.json { render("report_data", status: :ok) }
+    end
   end
 
   def report
@@ -100,9 +99,9 @@ class ProponentsController < ApplicationController
   def calculate_inss_discount
     CalculateDiscountJob.perform_async(params[:salary])
 
-    render(json: {
-      message: "Calculando desconto em segundo plano...",
-    })
+    respond_to do |format|
+      format.json { render("calculate_inss_discount", status: :ok) }
+    end
   end
 
   private

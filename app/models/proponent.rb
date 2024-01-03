@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Proponent < ApplicationRecord
+  include Searchable
+
   serialize :phones, coder: JSON
   has_many :addresses, dependent: :destroy
 
@@ -67,6 +69,20 @@ class Proponent < ApplicationRecord
 
     def parse_salary(salary)
       salary.delete(".").tr(",", ".").to_f
+    end
+
+    def search(query)
+      params = {
+        query: {
+          multi_match: {
+            query: query,
+            fields: ["name"],
+            fuzziness: "AUTO",
+          },
+        },
+      }
+
+      __elasticsearch__.search(params).records.to_a
     end
   end
 end
