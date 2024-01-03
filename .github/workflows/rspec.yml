@@ -39,6 +39,10 @@ jobs:
           bin/rails db:create
           bin/rails db:migrate
 
+      - name: Run Assets Precompile
+        run: |
+          bin/rails assets:precompile
+
       - name: Run RSpec tests
         run: bundle exec rspec
 
