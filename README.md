@@ -46,10 +46,10 @@ Proponent.import
 
 No terminal
 ```
-rails db:create db:migrate RAILS_ENV=test
-
 Entre no container do projeto com o comando:
 docker compose exec -it desafio_impulso bash
+
+rails db:create db:migrate RAILS_ENV=test
 
 Rode os testes com o comando:
 rspec
