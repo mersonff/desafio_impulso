@@ -33,12 +33,17 @@ Acesse o projeto em http://localhost:3333
 OBS: no primeiro acesso, pode ser necessário rodar o comando abaixo para criar o banco de dados e rodar as migrations
 
 rails db:create db:migrate
+
+Popular o banco de dados com o comando:
+rake dev:prime
 ```
 
 ## Testes
 
 No terminal
 ```
+rails db:create db:migrate RAILS_ENV=test
+
 Entre no container do projeto com o comando:
 docker compose exec -it desafio_impulso bash
 
