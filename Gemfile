@@ -37,16 +37,20 @@ end
 
 gem "awesome_print"
 gem "bootsnap", require: false
+gem "bootstrap5-kaminari-views", "~> 0.0.1"
 gem "country_select", "~> 8.0"
 gem "cpf_validator", "~> 0.2.1"
 gem "cssbundling-rails"
 gem "devise", "~> 4.9"
 gem "dotenv-rails"
+gem "draper", "~> 4.0"
 gem "importmap-rails"
 gem "jbuilder"
 gem "kaminari", "~> 1.2"
+gem "kaminari-i18n", "~> 0.5.0"
 gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
+gem "rack-cors", "~> 2.0"
 gem "rails", "~> 7.1.2"
 gem "redis", ">= 4.0.1"
 gem "redis-rails"
@@ -58,11 +62,3 @@ gem "sprockets-rails"
 gem "stimulus-rails"
 gem "turbo-rails"
 gem "tzinfo-data", platforms: [:windows, :jruby]
-
-gem "bootstrap5-kaminari-views", "~> 0.0.1"
-
-gem "kaminari-i18n", "~> 0.5.0"
-
-gem "rack-cors", "~> 2.0"
-
-gem "draper", "~> 4.0"
