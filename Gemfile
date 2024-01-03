@@ -44,6 +44,8 @@ gem "cssbundling-rails"
 gem "devise", "~> 4.9"
 gem "dotenv-rails"
 gem "draper", "~> 4.0"
+gem "elasticsearch-model", "~> 7.2"
+gem "elasticsearch-rails", "~> 7.2"
 gem "importmap-rails"
 gem "jbuilder"
 gem "kaminari", "~> 1.2"
@@ -62,7 +64,3 @@ gem "sprockets-rails"
 gem "stimulus-rails"
 gem "turbo-rails"
 gem "tzinfo-data", platforms: [:windows, :jruby]
-
-gem "elasticsearch-model", "~> 7.2"
-
-gem "elasticsearch-rails", "~> 7.2"

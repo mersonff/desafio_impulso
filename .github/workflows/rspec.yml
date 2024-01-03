@@ -25,6 +25,11 @@ jobs:
         image: redis:alpine3.16
         ports: ["6379:6379"]
         options: --entrypoint redis-server
+      elastic:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+        ports: ["9200:9200", "9300:9300"]
+        env:
+          discovery.type: single-node
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

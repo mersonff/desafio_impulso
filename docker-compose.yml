@@ -65,6 +65,9 @@ services:
       - .env
     depends_on:
       - postgres
+      - redis
+      - elasticsearch
+      - sidekiq
 
 volumes:
   desafio_impulso-postgres:
