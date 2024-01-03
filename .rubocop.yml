@@ -18,6 +18,9 @@ AllCops:
 Bundler/OrderedGems:
   Enabled: true
 
+Rspec/ExampleLength:
+  Max: 20
+
 Gemspec/DeprecatedAttributeAssignment:
   Enabled: true
 

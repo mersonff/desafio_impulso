@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe(User, type: :model) do
@@ -7,23 +9,23 @@ RSpec.describe(User, type: :model) do
 
   describe "devise modules" do
     it "includes database_authenticatable module" do
-      expect(User.devise_modules).to(include(:database_authenticatable))
+      expect(described_class.devise_modules).to(include(:database_authenticatable))
     end
 
     it "includes registerable module" do
-      expect(User.devise_modules).to(include(:registerable))
+      expect(described_class.devise_modules).to(include(:registerable))
     end
 
     it "includes recoverable module" do
-      expect(User.devise_modules).to(include(:recoverable))
+      expect(described_class.devise_modules).to(include(:recoverable))
     end
 
     it "includes rememberable module" do
-      expect(User.devise_modules).to(include(:rememberable))
+      expect(described_class.devise_modules).to(include(:rememberable))
     end
 
     it "includes validatable module" do
-      expect(User.devise_modules).to(include(:validatable))
+      expect(described_class.devise_modules).to(include(:validatable))
     end
   end
 end

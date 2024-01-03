@@ -3,9 +3,10 @@
 require "rails_helper"
 
 RSpec.describe(ProponentsController, type: :request) do
+  let(:user) { create(:user) }
+
   before do
-    @user = create(:user)
-    login_as(@user, scope: :user)
+    login_as(user, scope: :user)
   end
 
   describe "GET /index" do
@@ -107,7 +108,7 @@ RSpec.describe(ProponentsController, type: :request) do
   end
 
   describe "GET /calculate_inss_discount" do
-    it "returns http success" do
+    it "returns http success", :aggregate_failures do
       get(calculate_inss_discount_proponents_path)
       expect(response).to(have_http_status(:success))
 
