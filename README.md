@@ -11,7 +11,6 @@ Desenvolva uma aplicação "Desconto INSS" utilizando o Rails, atendendo aos seg
 - **Redis**
 - **Sidekiq**
 
-
 ## Instalando a Aplicação
 
 Para instalar o projeto, siga estas etapas:
