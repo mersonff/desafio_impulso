@@ -7,7 +7,6 @@ require_relative "../config/environment"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require "rspec/rails"
 require "simplecov"
-require "simplecov-json"
 require "sidekiq/testing/inline"
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
@@ -32,6 +31,5 @@ end
 SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(
   [
     SimpleCov::Formatter::HTMLFormatter,
-    SimpleCov::Formatter::JSONFormatter,
   ],
 )
