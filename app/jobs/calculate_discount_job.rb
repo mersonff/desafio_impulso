@@ -10,7 +10,7 @@ class CalculateDiscountJob
 
     ActionCable.server.broadcast(
       "WorkerChannel",
-      { result: result },
+      { inss_discount: result },
     )
   end
 end
