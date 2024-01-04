@@ -29,10 +29,15 @@ export default class extends Controller {
         if(data.inss_discount == null) {
           inssDiscount.value = data.message;
         } else {
-          const discount = Math.floor(data.inss_discount * 100) / 100;
-          inssDiscount.value = discount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2, round: 'floor' });
+          this.parseDiscount(data);
         }
       });
+  }
+
+  parseDiscount(data) {
+    const inssDiscount = document.getElementById('proponent_inss_discount');
+    const discount = Math.floor(data.inss_discount * 100) / 100;
+    inssDiscount.value = discount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2, round: 'floor' });
   }
 
   _connected() {
@@ -40,8 +45,6 @@ export default class extends Controller {
   }
 
   _received(data) {
-    const inssDiscount = document.getElementById('proponent_inss_discount');
-    const discount = Math.floor(data.result * 100) / 100;
-    inssDiscount.value = discount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2, round: 'floor' });
+    this.parseDiscount(data)
   }
 }

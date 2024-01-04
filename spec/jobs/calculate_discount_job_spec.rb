@@ -18,7 +18,7 @@ RSpec.describe(CalculateDiscountJob, type: :job) do
 
       expect(ActionCable.server).to(have_received(:broadcast).with(
         "WorkerChannel",
-        { result: result },
+        { inss_discount: result },
       ))
     end
   end
