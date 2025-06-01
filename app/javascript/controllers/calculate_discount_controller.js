@@ -19,18 +19,31 @@ export default class extends Controller {
     event.preventDefault();
     const salary = event.target.value;
 
+    if (!salary) {
+      const inssDiscount = document.getElementById('proponent_inss_discount');
+      inssDiscount.value = '';
+      return;
+    }
+
     const url = `/proponents/calculate_inss_discount?salary=${salary}`;
 
     fetch(url)
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro ao calcular desconto');
+        }
+        return response.json();
+      })
       .then(data => {
         const inssDiscount = document.getElementById('proponent_inss_discount');
-
-        if(data.inss_discount == null) {
-          inssDiscount.value = data.message;
-        } else {
+        if (data.inss_discount != null) {
           this.parseDiscount(data);
         }
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        const inssDiscount = document.getElementById('proponent_inss_discount');
+        inssDiscount.value = '';
       });
   }
 

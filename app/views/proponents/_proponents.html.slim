@@ -1,0 +1,7 @@
+.row
+  .col-12
+    = render proponents
+
+br
+.d-flex.justify-content-center
+  = paginate proponents, theme: 'bootstrap-5', params: { turbo_frame: 'proponents' } 

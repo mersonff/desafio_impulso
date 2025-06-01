@@ -3,6 +3,8 @@
 # app/controllers/proponents_controller.rb
 
 class ProponentsController < ApplicationController
+  include ActionView::RecordIdentifier
+
   before_action :set_proponent, only: [:edit, :update, :destroy]
 
   def index
@@ -11,6 +13,11 @@ class ProponentsController < ApplicationController
       Kaminari.paginate_array(query.search(params[:search])).page(params[:page]).per(5)
     else
       query.page(params[:page]).per(5)
+    end
+
+    respond_to do |format|
+      format.html
+      format.turbo_stream
     end
   end
 
@@ -24,19 +31,32 @@ class ProponentsController < ApplicationController
     @proponent = Proponent.new(proponent_params.merge(salary: salary, inss_discount: discount))
     @proponent.user = current_user
 
-    respond_to do |format|
-      if @proponent.save
+    if @proponent.save
+      respond_to do |format|
         format.html do
           redirect_to(
             proponents_path,
-            notice: t("flash.actions.create.notice", resource_name: Proponent.model_name.human),
+            notice: t("flash.actions.update.notice", resource_name: Proponent.model_name.human),
           )
         end
         format.turbo_stream do
           flash.now[:notice] = t("flash.actions.create.notice", resource_name: Proponent.model_name.human)
+          render turbo_stream: [
+            turbo_stream.append("proponents", partial: "proponent", locals: { proponent: @proponent }),
+            turbo_stream.update("flash", partial: "layouts/flash"),
+            turbo_stream.update("new_proponent", "")
+          ]
         end
-      else
-        render(:new, status: :unprocessable_entity)
+      end
+    else
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.turbo_stream { 
+          render turbo_stream: [
+            turbo_stream.update("new_proponent", partial: "form", locals: { proponent: @proponent }),
+            turbo_stream.update("flash", partial: "layouts/flash", locals: { flash: { error: @proponent.errors.full_messages.join(", ") } })
+          ]
+        }
       end
     end
   end
@@ -47,8 +67,9 @@ class ProponentsController < ApplicationController
   def update
     salary = params[:proponent][:salary].delete(".").tr(",", ".")
     discount = params[:proponent][:inss_discount]&.delete(".")&.tr(",", ".")
-    respond_to do |format|
-      if @proponent.update(proponent_params.merge(salary: salary, inss_discount: discount))
+    
+    if @proponent.update(proponent_params.merge(salary: salary, inss_discount: discount))
+      respond_to do |format|
         format.html do
           redirect_to(
             proponents_path,
@@ -57,9 +78,21 @@ class ProponentsController < ApplicationController
         end
         format.turbo_stream do
           flash.now[:notice] = t("flash.actions.update.notice", resource_name: Proponent.model_name.human)
+          render turbo_stream: [
+            turbo_stream.replace(dom_id(@proponent), partial: "proponent", locals: { proponent: @proponent }),
+            turbo_stream.update("flash", partial: "layouts/flash")
+          ]
         end
-      else
-        render(:edit, status: :unprocessable_entity)
+      end
+    else
+      respond_to do |format|
+        format.html { render :edit, status: :unprocessable_entity }
+        format.turbo_stream { 
+          render turbo_stream: [
+            turbo_stream.replace(dom_id(@proponent), partial: "form", locals: { proponent: @proponent }),
+            turbo_stream.update("flash", partial: "layouts/flash", locals: { flash: { error: @proponent.errors.full_messages.join(", ") } })
+          ]
+        }
       end
     end
   end
@@ -76,6 +109,10 @@ class ProponentsController < ApplicationController
       end
       format.turbo_stream do
         flash.now[:notice] = t("flash.actions.destroy.notice", resource_name: Proponent.model_name.human)
+        render turbo_stream: [
+          turbo_stream.remove(dom_id(@proponent)),
+          turbo_stream.update("flash", partial: "layouts/flash")
+        ]
       end
     end
   end
@@ -97,10 +134,19 @@ class ProponentsController < ApplicationController
   end
 
   def calculate_inss_discount
-    CalculateDiscountJob.perform_async(params[:salary])
+    salary = params[:salary]
+    discount = Proponent.calculate_inss_discount(salary)
+    
+    # Envia o cálculo para o job em segundo plano para atualização futura
+    CalculateDiscountJob.perform_async(salary)
 
     respond_to do |format|
-      format.json { render("calculate_inss_discount", status: :ok) }
+      format.json { 
+        render json: {
+          inss_discount: discount,
+          message: "Desconto calculado com sucesso"
+        }
+      }
     end
   end
 

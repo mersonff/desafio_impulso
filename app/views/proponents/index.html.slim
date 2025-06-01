@@ -4,7 +4,6 @@
 
   = turbo_stream_from current_user, "proponents"
 
-
   .row.mb-4
     .col-md-6.d-flex.align-items-end
       = form_tag(proponents_path, method: :get, class: 'w-100') do
@@ -15,19 +14,18 @@
               i.bi.bi-search
 
     .col-md-6.text-md-end
-      = link_to t('activerecord.models.proponent.new'), new_proponent_path, class: 'btn btn-primary mb-2 mb-md-4', data: { turbo_frame: dom_id(Proponent.new) }
+      = link_to t('activerecord.models.proponent.new'), new_proponent_path, class: 'btn btn-primary mb-2 mb-md-4', data: { turbo_frame: "new_proponent" }
 
-  = turbo_frame_tag Proponent.new do
-    - unless current_user.proponents.any?
-      = render "proponents/empty_state"
+  #new_proponent
+    = turbo_frame_tag "new_proponent" do
+      - if current_user.proponents.none?
+        = render "proponents/empty_state"
 
-  = turbo_frame_tag "proponents"
-    .row
-      .col-12
-        = render @proponents
+  #proponents
+    = turbo_frame_tag "proponents" do
+      = render @proponents
 
-    br
-    .d-flex.justify-content-center
-      = paginate @proponents, theme: 'bootstrap-5', params: { turbo_frame: 'proponents' }
+  .d-flex.justify-content-center.mt-4
+    = paginate @proponents, theme: 'bootstrap-5', params: { turbo_frame: 'proponents' }
 
 

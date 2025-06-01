@@ -53,18 +53,48 @@ class Proponent < ApplicationRecord
       return 0.0 if salary.blank?
 
       salary = parse_salary(salary)
-      result = if salary <= 1045
-        salary * 0.075
-      elsif salary <= 2089.60
-        (salary - 1045) * 0.09 + 78.37
-      elsif salary <= 3134.40
-        (salary - 2089.60) * 0.12 + 94.01 + 78.37
-      elsif salary <= 6101.06
-        (salary - 3134.40) * 0.14 + 109.24 + 94.01 + 78.37
-      else
-        713.10
+      
+      # Se o salário for maior que o teto, calcula o desconto até o teto
+      if salary > 7786.02
+        return 876.97 # Teto do INSS 2023
       end
-      result
+
+      # Calcula o desconto progressivo por faixas
+      result = 0.0
+
+      # 1ª faixa: até R$ 1.412,00 (7,5%)
+      if salary > 1412
+        result += 1412 * 0.075
+      else
+        result += salary * 0.075
+        return (result * 100).floor / 100.0
+      end
+
+      # 2ª faixa: de R$ 1.412,01 até R$ 2.666,68 (9%)
+      if salary > 2666.68
+        result += (2666.68 - 1412) * 0.09
+      else
+        result += (salary - 1412) * 0.09
+        return (result * 100).floor / 100.0
+      end
+
+      # 3ª faixa: de R$ 2.666,69 até R$ 4.000,03 (12%)
+      if salary > 4000.03
+        result += (4000.03 - 2666.68) * 0.12
+      else
+        result += (salary - 2666.68) * 0.12
+        return (result * 100).floor / 100.0
+      end
+
+      # 4ª faixa: de R$ 4.000,04 até R$ 7.786,02 (14%)
+      if salary > 7786.02
+        result += (7786.02 - 4000.03) * 0.14
+      else
+        result += (salary - 4000.03) * 0.14
+      end
+
+      # Arredonda para 2 casas decimais
+      (result * 100).floor / 100.0
     end
 
     def parse_salary(salary)

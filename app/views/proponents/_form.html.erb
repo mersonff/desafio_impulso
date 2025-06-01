@@ -1,4 +1,4 @@
-<%= simple_form_for proponent, data: { controller: 'flatpickr nested-form', nested_form_wrapper_selector_value: '.nested-form-wrapper' } do |form| %>
+<%= simple_form_for proponent, data: { controller: 'flatpickr nested-form form', nested_form_wrapper_selector_value: '.nested-form-wrapper' } do |form| %>
   <%= title_for(proponent) %>
   <% if proponent.errors.any? %>
     <div id="error_explanation" class="alert alert-danger">

@@ -1,17 +1,10 @@
-import NestedForm from 'stimulus-rails-nested-form'
+import { Controller } from "@hotwired/stimulus"
 
-export default class extends NestedForm {
-  connect() {
-    super.connect()
-    console.log('Do what you want here.')
-  }
-
+export default class extends Controller {
   cancel(event) {
     event.preventDefault();
-    const form = this.element.closest('form');
-    const frameId = form.closest('turbo-frame').id;
+    const frameId = this.element.closest('turbo-frame').id;
     
-    // Limpa o form
     if (frameId === 'new_proponent') {
       Turbo.visit('/proponents', { action: 'replace' });
     } else {
@@ -19,4 +12,4 @@ export default class extends NestedForm {
       Turbo.visit(`/proponents/${proponentId}`, { action: 'replace' });
     }
   }
-}
+} 
