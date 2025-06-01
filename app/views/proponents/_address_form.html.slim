@@ -1,0 +1,25 @@
+br
+.nested-form-wrapper data-new-record=f.object.new_record?
+  .form-group
+    = f.input :zip_code, input_html: { data: { controller: 'mask search-address', mask_type_value: "zip_code", action: "input->search-address#search" } }
+
+  .form-group
+    = f.input :street
+
+  .form-group
+    = f.input :number
+
+  .form-group
+    = f.input :neighborhood
+
+  .form-group
+    = f.input :city
+
+  .form-group
+    = f.input :state
+
+  br
+
+  .d-flex.justify-content-between.align-items-center
+    = f.hidden_field :_destroy
+    button.btn.btn-danger type="button" data-action="nested-form#remove" style="margin-bottom: 1em;" Remover Endereço 

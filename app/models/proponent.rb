@@ -42,10 +42,10 @@ class Proponent < ApplicationRecord
   class << self
     def data_for_chart
       [
-        Proponent.where(salary: 0..1045).count,
-        Proponent.where(salary: 1045.01..2089.60).count,
-        Proponent.where(salary: 2089.61..3134.40).count,
-        Proponent.where(salary: 3134.41..6101.06).count,
+        Proponent.where(salary: 0..1412).count,
+        Proponent.where(salary: 1412.01..2666.68).count,
+        Proponent.where(salary: 2666.69..4000.03).count,
+        Proponent.where(salary: 4000.04..7786.02).count,
       ]
     end
 

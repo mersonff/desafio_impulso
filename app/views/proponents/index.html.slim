@@ -5,16 +5,15 @@
   = turbo_stream_from current_user, "proponents"
 
   .row.mb-4
-    .col-md-6.d-flex.align-items-end
+    .col-md-8
       = form_tag(proponents_path, method: :get, class: 'w-100') do
         .input-group
           = text_field_tag :search, params[:search], class: 'form-control'
-          .input-group-append
+          .input-group-append.ms-2
             = button_tag(type: 'submit', class: 'btn btn-outline-secondary') do
               i.bi.bi-search
-
-    .col-md-6.text-md-end
-      = link_to t('activerecord.models.proponent.new'), new_proponent_path, class: 'btn btn-primary mb-2 mb-md-4', data: { turbo_frame: "new_proponent" }
+    .col-md-4.d-flex.align-items-center.justify-content-end
+      = link_to t('activerecord.models.proponent.new'), new_proponent_path, class: 'btn btn-primary', data: { turbo_frame: "new_proponent" }
 
   #new_proponent
     = turbo_frame_tag "new_proponent" do

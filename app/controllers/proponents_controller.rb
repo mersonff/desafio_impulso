@@ -125,10 +125,10 @@ class ProponentsController < ApplicationController
 
   def report
     @labels = [
-      "Até R$ 1.045,00",
-      "De R$ 1.045,01 a R$ 2.089,60",
-      "De R$ 2.089,61 até R$ 3.134,40",
-      "De R$ 3.134,41 até R$ 6.101,06",
+      "Até R$ 1.412,00",
+      "De R$ 1.412,01 a R$ 2.666,68",
+      "De R$ 2.666,69 a R$ 4.000,03",
+      "De R$ 4.000,04 a R$ 7.786,02"
     ]
     @values = Proponent.data_for_chart
   end

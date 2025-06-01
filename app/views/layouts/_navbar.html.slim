@@ -4,7 +4,7 @@
       = link_to root_path, class: 'navbar-brand' do
         | DasafioImpulso
 
-      button.navbar-toggler type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
+      button.navbar-toggler type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"
         span.navbar-toggler-icon
 
       .collapse.navbar-collapse#navbarNav
@@ -14,7 +14,7 @@
           li.nav-item
             = link_to 'Relatórios', report_proponents_path, class: 'nav-link'
 
-      ul.navbar-nav
-        li.nav-item
-          = form_tag destroy_user_session_path, method: :delete, class: 'd-flex' do
-            button.btn.btn-link.nav-link(type="submit") Log out
+        ul.navbar-nav.ms-auto
+          li.nav-item
+            = form_tag destroy_user_session_path, method: :delete, class: 'd-flex' do
+              button.btn.btn-link.nav-link(type="submit") Log out
