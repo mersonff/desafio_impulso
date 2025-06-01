@@ -4,6 +4,7 @@
 
 class ProponentsController < ApplicationController
   include ActionView::RecordIdentifier
+  include MonetaryParser
 
   before_action :set_proponent, only: [:edit, :update, :destroy]
 
@@ -26,9 +27,8 @@ class ProponentsController < ApplicationController
   end
 
   def create
-    salary = params[:proponent][:salary].delete(".").tr(",", ".")
-    discount = params[:proponent][:inss_discount]&.delete(".")&.tr(",", ".")
-    @proponent = Proponent.new(proponent_params.merge(salary: salary, inss_discount: discount))
+    @original_params = proponent_params.dup
+    @proponent = Proponent.new(params_with_parsed_values)
     @proponent.user = current_user
 
     if @proponent.save
@@ -49,6 +49,8 @@ class ProponentsController < ApplicationController
         end
       end
     else
+      @proponent.assign_attributes(@original_params)
+      
       respond_to do |format|
         format.html { render :new, status: :unprocessable_entity }
         format.turbo_stream { 
@@ -65,10 +67,8 @@ class ProponentsController < ApplicationController
   end
 
   def update
-    salary = params[:proponent][:salary].delete(".").tr(",", ".")
-    discount = params[:proponent][:inss_discount]&.delete(".")&.tr(",", ".")
-    
-    if @proponent.update(proponent_params.merge(salary: salary, inss_discount: discount))
+    @original_params = proponent_params.dup
+    if @proponent.update(params_with_parsed_values)
       respond_to do |format|
         format.html do
           redirect_to(
@@ -85,6 +85,8 @@ class ProponentsController < ApplicationController
         end
       end
     else
+      @proponent.assign_attributes(@original_params)
+      
       respond_to do |format|
         format.html { render :edit, status: :unprocessable_entity }
         format.turbo_stream { 
@@ -163,8 +165,13 @@ class ProponentsController < ApplicationController
       :birth_date,
       :residential_phone,
       :mobile_phone,
+      :salary,
       :inss_discount,
       addresses_attributes: [:id, :street, :number, :neighborhood, :city, :state, :zip_code, :_destroy],
     )
+  end
+
+  def params_with_parsed_values
+    parse_monetary_params(proponent_params)
   end
 end
