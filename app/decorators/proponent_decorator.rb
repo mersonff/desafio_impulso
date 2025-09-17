@@ -4,10 +4,10 @@ class ProponentDecorator < Draper::Decorator
   delegate_all
 
   def salary
-    h.number_with_precision(object.salary, precision: 2, separator: ",", delimiter: ".")
+    object.localized.salary
   end
 
   def inss_discount
-    h.number_with_precision(object.inss_discount, precision: 2, separator: ",", delimiter: ".")
+    object.localized.inss_discount
   end
 end

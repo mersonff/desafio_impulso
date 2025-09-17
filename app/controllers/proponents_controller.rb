@@ -4,7 +4,6 @@
 
 class ProponentsController < ApplicationController
   include ActionView::RecordIdentifier
-  include MonetaryParser
 
   before_action :set_proponent, only: [:edit, :update, :destroy]
 
@@ -27,38 +26,40 @@ class ProponentsController < ApplicationController
   end
 
   def create
-    @original_params = proponent_params.dup
-    @proponent = Proponent.new(params_with_parsed_values)
+    @proponent = Proponent.new
     @proponent.user = current_user
+    assign_resource(@proponent, proponent_params)
 
     if @proponent.save
       respond_to do |format|
         format.html do
           redirect_to(
             proponents_path,
-            notice: t("flash.actions.update.notice", resource_name: Proponent.model_name.human),
+            notice: t("flash.actions.create.notice", resource_name: Proponent.model_name.human),
           )
         end
         format.turbo_stream do
           flash.now[:notice] = t("flash.actions.create.notice", resource_name: Proponent.model_name.human)
-          render turbo_stream: [
+          render(turbo_stream: [
             turbo_stream.append("proponents", partial: "proponent", locals: { proponent: @proponent }),
             turbo_stream.update("flash", partial: "layouts/flash"),
-            turbo_stream.update("new_proponent", "")
-          ]
+            turbo_stream.update("new_proponent", ""),
+          ])
         end
       end
     else
-      @proponent.assign_attributes(@original_params)
-      
       respond_to do |format|
-        format.html { render :new, status: :unprocessable_entity }
-        format.turbo_stream { 
-          render turbo_stream: [
+        format.html { render(:new, status: :unprocessable_entity) }
+        format.turbo_stream do
+          render(turbo_stream: [
             turbo_stream.update("new_proponent", partial: "form", locals: { proponent: @proponent }),
-            turbo_stream.update("flash", partial: "layouts/flash", locals: { flash: { error: @proponent.errors.full_messages.join(", ") } })
-          ]
-        }
+            turbo_stream.update(
+              "flash",
+              partial: "layouts/flash",
+              locals: { flash: { error: @proponent.errors.full_messages.join(", ") } },
+            ),
+          ])
+        end
       end
     end
   end
@@ -67,8 +68,7 @@ class ProponentsController < ApplicationController
   end
 
   def update
-    @original_params = proponent_params.dup
-    if @proponent.update(params_with_parsed_values)
+    if update_resource(@proponent, proponent_params)
       respond_to do |format|
         format.html do
           redirect_to(
@@ -78,23 +78,25 @@ class ProponentsController < ApplicationController
         end
         format.turbo_stream do
           flash.now[:notice] = t("flash.actions.update.notice", resource_name: Proponent.model_name.human)
-          render turbo_stream: [
+          render(turbo_stream: [
             turbo_stream.replace(dom_id(@proponent), partial: "proponent", locals: { proponent: @proponent }),
-            turbo_stream.update("flash", partial: "layouts/flash")
-          ]
+            turbo_stream.update("flash", partial: "layouts/flash"),
+          ])
         end
       end
     else
-      @proponent.assign_attributes(@original_params)
-      
       respond_to do |format|
-        format.html { render :edit, status: :unprocessable_entity }
-        format.turbo_stream { 
-          render turbo_stream: [
+        format.html { render(:edit, status: :unprocessable_entity) }
+        format.turbo_stream do
+          render(turbo_stream: [
             turbo_stream.replace(dom_id(@proponent), partial: "form", locals: { proponent: @proponent }),
-            turbo_stream.update("flash", partial: "layouts/flash", locals: { flash: { error: @proponent.errors.full_messages.join(", ") } })
-          ]
-        }
+            turbo_stream.update(
+              "flash",
+              partial: "layouts/flash",
+              locals: { flash: { error: @proponent.errors.full_messages.join(", ") } },
+            ),
+          ])
+        end
       end
     end
   end
@@ -111,10 +113,10 @@ class ProponentsController < ApplicationController
       end
       format.turbo_stream do
         flash.now[:notice] = t("flash.actions.destroy.notice", resource_name: Proponent.model_name.human)
-        render turbo_stream: [
+        render(turbo_stream: [
           turbo_stream.remove(dom_id(@proponent)),
-          turbo_stream.update("flash", partial: "layouts/flash")
-        ]
+          turbo_stream.update("flash", partial: "layouts/flash"),
+        ])
       end
     end
   end
@@ -130,7 +132,7 @@ class ProponentsController < ApplicationController
       "Até R$ 1.412,00",
       "De R$ 1.412,01 a R$ 2.666,68",
       "De R$ 2.666,69 a R$ 4.000,03",
-      "De R$ 4.000,04 a R$ 7.786,02"
+      "De R$ 4.000,04 a R$ 7.786,02",
     ]
     @values = Proponent.data_for_chart
   end
@@ -138,17 +140,17 @@ class ProponentsController < ApplicationController
   def calculate_inss_discount
     salary = params[:salary]
     discount = Proponent.calculate_inss_discount(salary)
-    
+
     # Envia o cálculo para o job em segundo plano para atualização futura
     CalculateDiscountJob.perform_async(salary)
 
     respond_to do |format|
-      format.json { 
-        render json: {
+      format.json do
+        render(json: {
           inss_discount: discount,
-          message: "Desconto calculado com sucesso"
-        }
-      }
+          message: "Desconto calculado com sucesso",
+        })
+      end
     end
   end
 
@@ -171,7 +173,11 @@ class ProponentsController < ApplicationController
     )
   end
 
-  def params_with_parsed_values
-    parse_monetary_params(proponent_params)
+  def update_resource(object, attributes)
+    object.localized.update(attributes.to_h)
+  end
+
+  def assign_resource(object, attributes)
+    object.localized.assign_attributes(attributes.to_h)
   end
 end

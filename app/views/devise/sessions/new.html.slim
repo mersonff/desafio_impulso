@@ -3,7 +3,7 @@
     .col-lg-4
       h2 Log in
 
-      = form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'my-4' }) do |f|
+      = form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: 'my-4' }, data: { turbo: false }) do |f|
         .form-group
           = f.label :email
           = f.email_field :email, autofocus: true, autocomplete: "email", class: 'form-control'
