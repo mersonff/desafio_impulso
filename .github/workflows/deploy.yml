@@ -75,6 +75,9 @@ jobs:
         yarn install --frozen-lockfile
 
     - name: Build assets
+      env:
+        SECRET_KEY_BASE: dummy_key_for_assets_compilation
+        RAILS_ENV: test
       run: |
         yarn build:css
         bundle exec rails assets:precompile
