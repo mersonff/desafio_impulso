@@ -1,0 +1,179 @@
+name: Deploy to GCP Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GAR_LOCATION: us-central1
+  SERVICE: desafio-impulso
+  REGION: us-central1
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: desafio_impulso_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.2.2
+        bundler-cache: true
+
+    - name: Setup Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'yarn'
+
+    - name: Install dependencies
+      run: |
+        bundle install --jobs 4 --retry 3
+        yarn install --frozen-lockfile
+
+    - name: Setup database
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/desafio_impulso_test
+        REDIS_URL: redis://localhost:6379/0
+        RAILS_ENV: test
+      run: |
+        bundle exec rails db:create db:migrate
+
+    - name: Run tests
+      env:
+        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/desafio_impulso_test
+        REDIS_URL: redis://localhost:6379/0
+        RAILS_ENV: test
+      run: |
+        bundle exec rspec
+
+    - name: Run RuboCop
+      run: bundle exec rubocop
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Google Auth
+      id: auth
+      uses: 'google-github-actions/auth@v1'
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v1'
+
+    - name: 'Use gcloud CLI'
+      run: 'gcloud info'
+
+    - name: Configure Docker to use gcloud as credential helper
+      run: |
+        gcloud auth configure-docker $GAR_LOCATION-docker.pkg.dev
+
+    - name: Create Artifact Registry if needed
+      run: |
+        gcloud artifacts repositories create images \
+          --repository-format=docker \
+          --location=$GAR_LOCATION \
+          --description="Docker repository for desafio-impulso" || true
+
+    - name: Build and Push Container
+      run: |
+        docker build -f Dockerfile.production -t $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/images/$SERVICE:$GITHUB_SHA .
+        docker push $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/images/$SERVICE:$GITHUB_SHA
+
+    - name: Run Database Migrations
+      run: |
+        gcloud run jobs create migrate-job-$GITHUB_SHA \
+          --image $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/images/$SERVICE:$GITHUB_SHA \
+          --region $REGION \
+          --set-env-vars RAILS_ENV=production \
+          --set-secrets DATABASE_URL=database-url:latest,SECRET_KEY_BASE=rails-master-key:latest \
+          --command bundle,exec,rails,db:migrate \
+          --max-retries 1 \
+          --parallelism 1 \
+          --task-count 1 \
+          --cpu 1 \
+          --memory 512Mi \
+          --task-timeout 600 || true
+
+        gcloud run jobs execute migrate-job-$GITHUB_SHA --region $REGION --wait
+
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy $SERVICE \
+          --port 3000 \
+          --image $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/images/$SERVICE:$GITHUB_SHA \
+          --allow-unauthenticated \
+          --region $REGION \
+          --platform managed \
+          --set-env-vars RAILS_ENV=production,RAILS_SERVE_STATIC_FILES=true,RAILS_LOG_TO_STDOUT=true \
+          --set-secrets DATABASE_URL=database-url:latest,SECRET_KEY_BASE=rails-master-key:latest,REDIS_URL=redis-url:latest \
+          --add-cloudsql-instances $PROJECT_ID:$REGION:desafio-impulso-db \
+          --memory 512Mi \
+          --cpu 1 \
+          --concurrency 80 \
+          --timeout 300 \
+          --max-instances 10 \
+          --min-instances 0
+
+    - name: Deploy Sidekiq Worker
+      run: |
+        gcloud run deploy sidekiq-worker \
+          --image $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/images/$SERVICE:$GITHUB_SHA \
+          --region $REGION \
+          --platform managed \
+          --set-env-vars RAILS_ENV=production \
+          --set-secrets DATABASE_URL=database-url:latest,SECRET_KEY_BASE=rails-master-key:latest,REDIS_URL=redis-url:latest \
+          --add-cloudsql-instances $PROJECT_ID:$REGION:desafio-impulso-db \
+          --memory 512Mi \
+          --cpu 1 \
+          --max-instances 3 \
+          --min-instances 1 \
+          --no-allow-unauthenticated \
+          --command bundle,exec,sidekiq
+
+    - name: Clean up old migration jobs
+      run: |
+        # Remove migration jobs older than current
+        gcloud run jobs list --region=$REGION --format="value(name)" | grep "migrate-job-" | grep -v "migrate-job-$GITHUB_SHA" | head -5 | while read job; do
+          gcloud run jobs delete $job --region=$REGION --quiet || true
+        done
