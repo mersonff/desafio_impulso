@@ -1,0 +1,262 @@
+// Custom Styling for Sistema de Proponentes
+
+// Variables
+$primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$card-border-radius: 12px;
+$transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// Body and Layout
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+// Custom shadows
+.shadow-soft {
+  box-shadow: 0 2px 25px rgba(0, 0, 0, 0.05) !important;
+}
+
+.hover-shadow {
+  transition: $transition-smooth;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  }
+}
+
+// Cards
+.card {
+  border-radius: $card-border-radius;
+  border: none;
+  transition: $transition-smooth;
+
+  &.h-100 {
+    height: 100% !important;
+  }
+}
+
+// Navbar
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+// Buttons
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: $transition-smooth;
+
+  &.btn-primary {
+    background: $primary-gradient;
+    border: none;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+  }
+}
+
+// Form Controls
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #e1e5e9;
+  transition: $transition-smooth;
+
+  &:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+  }
+
+  &.form-control-lg {
+    padding: 12px 16px;
+    font-size: 1rem;
+  }
+}
+
+// Labels
+.form-label {
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+// Modals
+.modal-content {
+  border-radius: $card-border-radius;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+  border-radius: $card-border-radius $card-border-radius 0 0;
+  border-bottom: none;
+  padding: 1.5rem;
+}
+
+.modal-body {
+  padding: 2rem 1.5rem;
+}
+
+.modal-footer {
+  border-radius: 0 0 $card-border-radius $card-border-radius;
+  border-top: 1px solid #e9ecef;
+}
+
+// Toast notifications
+.toast {
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+}
+
+// Loading states
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  border-radius: $card-border-radius;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Badge improvements
+.badge {
+  font-weight: 500;
+  padding: 6px 12px;
+}
+
+// Text utilities
+.text-primary {
+  color: #667eea !important;
+}
+
+// Search input enhancements
+.form-control[data-search-target="input"] {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%23999' d='m11.742 10.344 6.019 6.018a1 1 0 1 1-1.414 1.414l-6.019-6.018a6.5 6.5 0 1 1 1.414-1.414zM12 6.5a5.5 5.5 0 1 0-11 0 5.5 5.5 0 0 0 11 0z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
+}
+
+// Animation for new items
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideInFromTop 0.3s ease-out;
+}
+
+// Animation for removing items
+@keyframes slideOutAndFade {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    transform: scale(0.95) translateY(-10px);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8) translateY(-20px);
+  }
+}
+
+.animate-slide-out {
+  animation: slideOutAndFade 0.3s ease-in forwards;
+}
+
+// Grid reflow animations
+.grid-container {
+  .col-lg-4, .col-md-6 {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+// Smooth grid transitions
+.proponents-grid {
+  .row > div {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+// Delete confirmation modal improvements
+.modal.delete-confirm {
+  .modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .modal-header {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+  }
+
+  .modal-body {
+    background: #f8f9fa;
+  }
+}
+
+// Improved table styling (for reports)
+.table {
+  border-radius: $card-border-radius;
+  overflow: hidden;
+
+  thead th {
+    background: $primary-gradient;
+    color: white;
+    font-weight: 600;
+    border: none;
+  }
+
+  tbody td {
+    border-color: #f8f9fa;
+    vertical-align: middle;
+  }
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

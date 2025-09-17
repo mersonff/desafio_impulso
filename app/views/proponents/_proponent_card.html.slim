@@ -1,0 +1,51 @@
+.card.h-100.shadow-sm.border-0.hover-shadow data-controller="hover-effect"
+  .card-body.d-flex.flex-column
+    .d-flex.justify-content-between.align-items-start.mb-3
+      h5.card-title.mb-0.text-truncate.flex-grow-1
+        = proponent.name
+      .dropdown data-controller="dropdown"
+        button.btn.btn-sm.btn-outline-secondary.dropdown-toggle type="button" id="dropdownMenuButton#{proponent.id}" data-bs-toggle="dropdown" data-action="click->dropdown#toggle" data-dropdown-target="toggle" aria-expanded="false"
+          i.bi.bi-three-dots
+        ul.dropdown-menu.dropdown-menu-end data-dropdown-target="menu" aria-labelledby="dropdownMenuButton#{proponent.id}"
+          li
+            = link_to edit_proponent_path(proponent), class: "dropdown-item", data: { turbo_frame: "modal", turbo_action: "advance" } do
+              i.bi.bi-pencil.me-2
+              | Editar
+          li
+            hr.dropdown-divider
+          li
+            = link_to "#", class: "dropdown-item text-danger", data: { controller: "delete", action: "click->delete#confirm", delete_name_value: proponent.name, delete_url_value: proponent_path(proponent) } do
+              i.bi.bi-trash.me-2
+              | Excluir
+
+    .row.g-2.mb-3
+      .col-6
+        .text-muted.small CPF
+        .fw-medium
+          = proponent.cpf
+      .col-6
+        .text-muted.small Salário
+        .fw-medium.text-success
+          = number_to_currency(proponent.salary)
+
+    .row.g-2.mb-3
+      .col-6
+        .text-muted.small Telefone
+        .fw-medium
+          = proponent.residential_phone || "Não informado"
+      .col-6
+        .text-muted.small Celular
+        .fw-medium
+          = proponent.mobile_phone || "Não informado"
+
+    .mt-auto
+      .d-flex.justify-content-between.align-items-center
+        .small.text-muted
+          i.bi.bi-geo-alt.me-1
+          - if proponent.last_address
+            = "#{proponent.last_address.city}, #{proponent.last_address.state}"
+          - else
+            | Sem endereço
+        .badge.bg-primary.rounded-pill
+          = number_to_currency(proponent.inss_discount)
+          .small  INSS

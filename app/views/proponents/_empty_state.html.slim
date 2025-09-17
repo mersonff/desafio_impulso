@@ -1,8 +1,12 @@
-.card
-  .card-body
-    .card-text
-      .row
-        .col-12
-          p
-            strong= I18n.t('helpers.messages.empty_state', model: I18n.t('activerecord.models.proponent.other'))
-br
+.text-center.py-5
+  .mb-4
+    i.bi.bi-people.display-1.text-muted
+  h3.text-muted.mb-3 Nenhum proponente encontrado
+  p.text-muted.mb-4
+    - if params[:search].present?
+      | Não encontramos resultados para "#{params[:search]}". Tente outra busca.
+    - else
+      | Comece adicionando seu primeiro proponente ao sistema.
+  = link_to new_proponent_path, class: 'btn btn-primary btn-lg shadow-sm', data: { turbo_frame: "modal" } do
+    i.bi.bi-plus-circle.me-2
+    | Adicionar Primeiro Proponente

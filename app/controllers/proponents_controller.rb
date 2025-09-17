@@ -41,9 +41,9 @@ class ProponentsController < ApplicationController
         format.turbo_stream do
           flash.now[:notice] = t("flash.actions.create.notice", resource_name: Proponent.model_name.human)
           render(turbo_stream: [
-            turbo_stream.append("proponents", partial: "proponent", locals: { proponent: @proponent }),
+            turbo_stream.prepend("proponents .row", partial: "proponent_card_wrapper", locals: { proponent: @proponent }),
             turbo_stream.update("flash", partial: "layouts/flash"),
-            turbo_stream.update("new_proponent", ""),
+            turbo_stream.update("modal", ""),
           ])
         end
       end
@@ -79,8 +79,13 @@ class ProponentsController < ApplicationController
         format.turbo_stream do
           flash.now[:notice] = t("flash.actions.update.notice", resource_name: Proponent.model_name.human)
           render(turbo_stream: [
-            turbo_stream.replace(dom_id(@proponent), partial: "proponent", locals: { proponent: @proponent }),
+            turbo_stream.replace(
+              "proponent_#{@proponent.id}",
+              partial: "proponent_card",
+              locals: { proponent: @proponent },
+            ),
             turbo_stream.update("flash", partial: "layouts/flash"),
+            turbo_stream.update("modal", ""),
           ])
         end
       end
@@ -114,7 +119,7 @@ class ProponentsController < ApplicationController
       format.turbo_stream do
         flash.now[:notice] = t("flash.actions.destroy.notice", resource_name: Proponent.model_name.human)
         render(turbo_stream: [
-          turbo_stream.remove(dom_id(@proponent)),
+          turbo_stream.remove("proponent_#{@proponent.id}"),
           turbo_stream.update("flash", partial: "layouts/flash"),
         ])
       end
