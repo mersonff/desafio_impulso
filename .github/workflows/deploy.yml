@@ -39,6 +39,20 @@ jobs:
         ports:
           - 6379:6379
 
+      elasticsearch:
+        image: elasticsearch:8.11.0
+        env:
+          discovery.type: single-node
+          xpack.security.enabled: false
+          ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+        options: >-
+          --health-cmd "curl -f http://localhost:9200/_cluster/health || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+          - 9200:9200
+
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -60,10 +74,16 @@ jobs:
         bundle install --jobs 4 --retry 3
         yarn install --frozen-lockfile
 
+    - name: Build assets
+      run: |
+        yarn build:css
+        bundle exec rails assets:precompile
+
     - name: Setup database
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/desafio_impulso_test
         REDIS_URL: redis://localhost:6379/0
+        ELASTICSEARCH_URL: http://localhost:9200
         RAILS_ENV: test
       run: |
         bundle exec rails db:create db:migrate
@@ -72,6 +92,7 @@ jobs:
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/desafio_impulso_test
         REDIS_URL: redis://localhost:6379/0
+        ELASTICSEARCH_URL: http://localhost:9200
         RAILS_ENV: test
       run: |
         bundle exec rspec
