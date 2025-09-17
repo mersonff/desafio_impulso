@@ -1,5 +1,5 @@
 = turbo_frame_tag "modal" do
-  .modal.d-block data-controller="modal" data-action="keydown.esc->modal#close" style="z-index: 1050;"
+  .modal.d-block data-controller="modal" data-action="keydown.esc@window->modal#close" style="z-index: 1050;"
     .modal-dialog.modal-lg.modal-dialog-scrollable.fade
       .modal-content.border-0.shadow
         .modal-header.bg-primary.text-white

@@ -1,0 +1,11 @@
+- if proponents.any?
+  .proponents-grid
+    .row.g-3
+      - proponents.each do |proponent|
+        .col-lg-4.col-md-6
+          = render "proponent_card", proponent: proponent
+
+  .d-flex.justify-content-center.mt-4
+    = paginate proponents, theme: 'bootstrap-5', params: { turbo_frame: 'proponents' }
+- else
+  = render "empty_state"

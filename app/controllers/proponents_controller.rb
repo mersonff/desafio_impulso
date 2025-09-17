@@ -30,8 +30,8 @@ class ProponentsController < ApplicationController
     @proponent.user = current_user
     assign_resource(@proponent, proponent_params)
 
-    if @proponent.save
-      respond_to do |format|
+    respond_to do |format|
+      if @proponent.save
         format.html do
           redirect_to(
             proponents_path,
@@ -39,26 +39,24 @@ class ProponentsController < ApplicationController
           )
         end
         format.turbo_stream do
-          flash.now[:notice] = t("flash.actions.create.notice", resource_name: Proponent.model_name.human)
-          render(turbo_stream: [
-            turbo_stream.prepend("proponents .row", partial: "proponent_card_wrapper", locals: { proponent: @proponent }),
-            turbo_stream.update("flash", partial: "layouts/flash"),
-            turbo_stream.update("modal", ""),
-          ])
+          message = t("flash.actions.create.notice", resource_name: Proponent.model_name.human)
+          @proponents = current_user.proponents.page(params[:page]).per(5)
+
+          streams = []
+          streams << turbo_stream.update("proponents", partial: "proponents_list", locals: { proponents: @proponents })
+          streams << turbo_stream.update("modal", "")
+          add_flash_stream(streams, message)
+
+          render(turbo_stream: streams)
         end
-      end
-    else
-      respond_to do |format|
+      else
         format.html { render(:new, status: :unprocessable_entity) }
         format.turbo_stream do
-          render(turbo_stream: [
-            turbo_stream.update("new_proponent", partial: "form", locals: { proponent: @proponent }),
-            turbo_stream.update(
-              "flash",
-              partial: "layouts/flash",
-              locals: { flash: { error: @proponent.errors.full_messages.join(", ") } },
-            ),
-          ])
+          render(turbo_stream: turbo_stream.update(
+            "modal",
+            template: "proponents/new",
+            locals: { proponent: @proponent },
+          ))
         end
       end
     end
@@ -68,8 +66,8 @@ class ProponentsController < ApplicationController
   end
 
   def update
-    if update_resource(@proponent, proponent_params)
-      respond_to do |format|
+    respond_to do |format|
+      if update_resource(@proponent, proponent_params)
         format.html do
           redirect_to(
             proponents_path,
@@ -77,30 +75,27 @@ class ProponentsController < ApplicationController
           )
         end
         format.turbo_stream do
-          flash.now[:notice] = t("flash.actions.update.notice", resource_name: Proponent.model_name.human)
-          render(turbo_stream: [
-            turbo_stream.replace(
-              "proponent_#{@proponent.id}",
-              partial: "proponent_card",
-              locals: { proponent: @proponent },
-            ),
-            turbo_stream.update("flash", partial: "layouts/flash"),
-            turbo_stream.update("modal", ""),
-          ])
+          message = t("flash.actions.update.notice", resource_name: Proponent.model_name.human)
+
+          streams = []
+          streams << turbo_stream.replace(
+            "proponent_#{@proponent.id}",
+            partial: "proponent_card",
+            locals: { proponent: @proponent },
+          )
+          streams << turbo_stream.update("modal", "")
+          add_flash_stream(streams, message)
+
+          render(turbo_stream: streams)
         end
-      end
-    else
-      respond_to do |format|
+      else
         format.html { render(:edit, status: :unprocessable_entity) }
         format.turbo_stream do
-          render(turbo_stream: [
-            turbo_stream.replace(dom_id(@proponent), partial: "form", locals: { proponent: @proponent }),
-            turbo_stream.update(
-              "flash",
-              partial: "layouts/flash",
-              locals: { flash: { error: @proponent.errors.full_messages.join(", ") } },
-            ),
-          ])
+          render(turbo_stream: turbo_stream.update(
+            "modal",
+            template: "proponents/edit",
+            locals: { proponent: @proponent },
+          ))
         end
       end
     end
@@ -117,11 +112,14 @@ class ProponentsController < ApplicationController
         )
       end
       format.turbo_stream do
-        flash.now[:notice] = t("flash.actions.destroy.notice", resource_name: Proponent.model_name.human)
-        render(turbo_stream: [
-          turbo_stream.remove("proponent_#{@proponent.id}"),
-          turbo_stream.update("flash", partial: "layouts/flash"),
-        ])
+        message = t("flash.actions.destroy.notice", resource_name: Proponent.model_name.human)
+        @proponents = current_user.proponents.page(params[:page]).per(5)
+
+        streams = []
+        streams << turbo_stream.update("proponents", partial: "proponents_list", locals: { proponents: @proponents })
+        add_flash_stream(streams, message)
+
+        render(turbo_stream: streams)
       end
     end
   end
@@ -163,6 +161,26 @@ class ProponentsController < ApplicationController
 
   def set_proponent
     @proponent = Proponent.find(params[:id]).decorate
+  end
+
+  def flash_toast(message, type = "success")
+    icon = type == "success" ? "check-circle-fill" : "exclamation-triangle-fill"
+    %{
+      <div class="toast align-items-center border-0 text-bg-#{type}" data-bs-delay="5000" data-controller="toast" data-action="hidden.bs.toast->toast#remove">
+        <div class="d-flex">
+          <div class="toast-body d-flex align-items-center">
+            <i class="bi bi-#{icon} me-2"></i>
+            #{message}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    }
+  end
+
+  def add_flash_stream(streams, message, type = "success")
+    streams << turbo_stream.update("flash", "")
+    streams << turbo_stream.append("flash", flash_toast(message, type))
   end
 
   def proponent_params

@@ -3,7 +3,6 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   connect() {
     this.createBackdrop()
-    this.element.addEventListener("click", this.clickOutside.bind(this))
     document.body.style.overflow = "hidden"
 
     // Add entrance animation
@@ -40,7 +39,13 @@ export default class extends Controller {
   }
 
   close(event) {
-    if (event) event.preventDefault()
+    if (event) {
+      event.preventDefault()
+      // Only close on ESC key, not other events
+      if (event.type === 'keydown' && event.key !== 'Escape') {
+        return
+      }
+    }
 
     // Add exit animation
     if (this.backdrop) {
@@ -67,9 +72,4 @@ export default class extends Controller {
     }, 150) // Bootstrap modal transition duration
   }
 
-  clickOutside(event) {
-    if (event.target === this.element || event.target === this.backdrop) {
-      this.close()
-    }
-  }
 }

@@ -115,13 +115,13 @@ export default class extends Controller {
       if (response.ok) {
         const responseText = await response.text()
 
+        // Process Turbo Stream response first
+        if (responseText.includes('turbo-stream')) {
+          Turbo.renderStreamMessage(responseText)
+        }
+
         // Add exit animation and grid reflow
-        this.animateExitWithReflow().then(() => {
-          // Process Turbo Stream response
-          if (responseText.includes('turbo-stream')) {
-            Turbo.renderStreamMessage(responseText)
-          }
-        })
+        this.animateExitWithReflow()
       } else {
         this.showError('Erro ao excluir o proponente.')
       }

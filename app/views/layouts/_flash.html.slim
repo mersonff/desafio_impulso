@@ -1,13 +1,14 @@
-- flash.each do |flash_type, message|
+- (flash || {}).each do |flash_type, message|
+  - next if message.blank?
   .toast.align-items-center.border-0.show data-bs-delay="5000" data-controller="toast" data-action="hidden.bs.toast->toast#remove"
-    - if flash_type == 'notice'
+    - if flash_type.to_s == 'notice'
       .toast.text-bg-success
         .d-flex
           .toast-body.d-flex.align-items-center
             i.bi.bi-check-circle-fill.me-2
             = message
           button.btn-close.btn-close-white.me-2.m-auto type="button" data-bs-dismiss="toast" aria-label="Close"
-    - elsif flash_type == 'alert' || flash_type == 'error'
+    - elsif flash_type.to_s == 'alert' || flash_type.to_s == 'error'
       .toast.text-bg-danger
         .d-flex
           .toast-body.d-flex.align-items-center

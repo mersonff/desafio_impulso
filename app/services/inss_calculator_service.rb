@@ -6,7 +6,7 @@ class InssCalculatorService
     { min: 0.0, max: 1412.0, rate: 0.075 },
     { min: 1412.01, max: 2666.68, rate: 0.09 },
     { min: 2666.69, max: 4000.03, rate: 0.12 },
-    { min: 4000.04, max: 7786.02, rate: 0.14 }
+    { min: 4000.04, max: 7786.02, rate: 0.14 },
   ].freeze
 
   INSS_CEILING = 876.97 # Teto do INSS 2023
