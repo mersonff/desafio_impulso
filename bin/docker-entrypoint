@@ -1,8 +1,27 @@
-#!/bin/bash -e
+#!/bin/bash
+set -e
+
+# Docker entrypoint script para produção
+
+echo "🚀 Iniciando aplicação..."
+
+# Aguardar banco de dados estar disponível em produção
+if [ "$RAILS_ENV" = "production" ]; then
+  echo "⏳ Aguardando banco de dados..."
+  until bundle exec rails runner "ActiveRecord::Base.connection.execute('SELECT 1')" > /dev/null 2>&1; do
+    echo "Database não está pronto - aguardando..."
+    sleep 2
+  done
+  echo "✅ Banco de dados conectado!"
+fi
 
 # If running the rails server then create or migrate existing database
 if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
-  ./bin/rails db:prepare
+  if [ "$RAILS_ENV" != "production" ]; then
+    ./bin/rails db:prepare
+  fi
 fi
 
+# Executar comando passado para o container
+echo "🎯 Executando: $@"
 exec "${@}"

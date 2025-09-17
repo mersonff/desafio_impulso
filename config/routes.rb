@@ -3,6 +3,9 @@
 Rails.application.routes.draw do
   devise_for :users
 
+  # Health check endpoint
+  get "health", to: "health#show"
+
   resources :proponents, except: [:show] do
     resources :addresses, except: [:show, :index]
     collection do

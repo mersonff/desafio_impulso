@@ -50,3 +50,8 @@ tmp
 node_modules
 .idea
 .env
+
+/config/master.key
+
+sa-key.json
+deployment-info.txt
