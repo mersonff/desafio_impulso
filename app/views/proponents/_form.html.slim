@@ -1,47 +1,81 @@
-= simple_form_for proponent, data: { controller: 'flatpickr nested-form form', nested_form_wrapper_selector_value: '.nested-form-wrapper' } do |form|
-  = title_for(proponent)
+= simple_form_for proponent, data: { controller: 'flatpickr nested-form form loading', nested_form_wrapper_selector_value: '.nested-form-wrapper', turbo_frame: "modal" } do |form|
   - if proponent.errors.any?
-    #error_explanation.alert.alert-danger
-      h4 Existem erros no formulário:
-      ul
+    .alert.alert-danger.border-0 role="alert"
+      .d-flex.align-items-center
+        i.bi.bi-exclamation-triangle-fill.me-2
+        strong Existem erros no formulário:
+      ul.mb-0.mt-2
         - proponent.errors.full_messages.each do |message|
           li = message
 
-  .form-group
-    = form.input :name
+  .row.g-3
 
-  .form-group
-    = form.input :cpf, input_html: { data: { controller: 'mask', mask_type_value: "cpf" } }
+    // Dados Pessoais
+    .col-12
+      h6.text-primary.mb-3.border-bottom.pb-2
+        i.bi.bi-person.me-2
+        | Dados Pessoais
 
-  .form-group
-    = form.input :birth_date, as: :string, input_html: { class: 'fp_date form-control' }
+    .col-md-8
+      = form.input :name, input_html: { class: 'form-control-lg' }
 
-  .form-group
-    = form.input :residential_phone, input_html: { data: { controller: 'mask', mask_type_value: "phone" } }
+    .col-md-4
+      = form.input :cpf, input_html: { data: { controller: 'mask', mask_type_value: "cpf" } }
 
-  .form-group
-    = form.input :mobile_phone, input_html: { data: { controller: 'mask', mask_type_value: "mobile" } }
+    .col-md-6
+      = form.input :birth_date, as: :string, input_html: { class: 'fp_date form-control', placeholder: 'dd/mm/aaaa' }
 
-  .form-group
-    = form.input :salary, as: :string, input_html: { data: { controller: 'mask calculate-discount', mask_type_value: "currency", action: "input->calculate-discount#calculate" } }
+    // Contatos
+    .col-12.mt-4
+      h6.text-primary.mb-3.border-bottom.pb-2
+        i.bi.bi-telephone.me-2
+        | Contatos
 
-  .form-group
-    = form.input :inss_discount, as: :string, readonly: true, input_html: { data: { controller: 'mask', mask_type_value: "currency" } }
+    .col-md-6
+      = form.input :residential_phone, input_html: { data: { controller: 'mask', mask_type_value: "phone" } }
 
-  h3 Endereços
+    .col-md-6
+      = form.input :mobile_phone, input_html: { data: { controller: 'mask', mask_type_value: "mobile" } }
 
-  template data-nested-form-target="template"
-    = form.fields_for :addresses, Address.new, child_index: 'NEW_RECORD' do |addresse_fields|
-      = render "address_form", f: addresse_fields
+    // Dados Financeiros
+    .col-12.mt-4
+      h6.text-primary.mb-3.border-bottom.pb-2
+        i.bi.bi-cash-coin.me-2
+        | Dados Financeiros
 
-  = form.fields_for :addresses do |addresse_fields|
-    = render "address_form", f: addresse_fields
+    .col-md-6
+      = form.input :salary, as: :string, input_html: { data: { controller: 'mask calculate-discount', mask_type_value: "currency", action: "input->calculate-discount#calculate" }, class: 'form-control-lg' }
 
-  div data-nested-form-target="target"
+    .col-md-6
+      = form.input :inss_discount, as: :string, readonly: true, input_html: { data: { controller: 'mask', mask_type_value: "currency" }, class: 'form-control-lg bg-light' }
 
-  button.btn.btn-secondary type="button" data-action="nested-form#add" style="margin-bottom: 1em;" Adicionar Endereço
-  br
-  .d-flex.gap-2
-    = form.button :submit, class: 'btn btn-primary'
-    = link_to t('helpers.back'), proponents_path, class: 'btn btn-light', data: { turbo_frame: '_top' }
-br 
+    // Endereços
+    .col-12.mt-4
+      .d-flex.justify-content-between.align-items-center.mb-3
+        h6.text-primary.mb-0.border-bottom.pb-2.flex-grow-1
+          i.bi.bi-geo-alt.me-2
+          | Endereços
+        button.btn.btn-sm.btn-outline-primary type="button" data-action="nested-form#add"
+          i.bi.bi-plus-circle.me-1
+          | Adicionar Endereço
+
+    .col-12
+      template data-nested-form-target="template"
+        = form.fields_for :addresses, Address.new, child_index: 'NEW_RECORD' do |address_fields|
+          = render "address_form", f: address_fields
+
+      = form.fields_for :addresses do |address_fields|
+        = render "address_form", f: address_fields
+
+      div data-nested-form-target="target"
+
+  .modal-footer.bg-light.border-0.mt-4.mx-n4.mb-n4.px-4.py-3
+    .d-flex.gap-2.w-100
+      = form.button :submit, class: 'btn btn-primary flex-grow-1 py-2', data: { loading_target: "button" } do
+        span data-loading-target="text"
+          i.bi.bi-check-circle.me-2
+          = proponent.persisted? ? 'Atualizar Proponente' : 'Criar Proponente'
+        .spinner-border.spinner-border-sm.ms-2.d-none data-loading-target="spinner"
+      button.btn.btn-outline-secondary type="button" data-action="modal#close"
+        i.bi.bi-x-circle.me-2
+        | Cancelar 

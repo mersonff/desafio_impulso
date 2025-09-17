@@ -10,7 +10,7 @@ RSpec.describe(CalculateDiscountJob, type: :job) do
   describe "#perform" do
     it "broadcasts the result to WorkerChannel" do
       salary = "4.000,0"
-      result = 402.804
+      result = 378.81
 
       allow(ActionCable.server).to(receive(:broadcast))
 

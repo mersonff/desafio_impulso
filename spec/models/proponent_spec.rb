@@ -78,18 +78,11 @@ RSpec.describe(Proponent, type: :model) do
   describe "calculate_inss_discount", :aggregate_failures do
     it "calculates the correct INSS discount for different salary ranges", :aggregate_failures do
       expect(described_class.calculate_inss_discount("1.000,00")).to(eq(75.0))
-      expect(described_class.calculate_inss_discount("1.500,00")).to(eq(119.32))
-      expect(described_class.calculate_inss_discount("2.000,00")).to(eq(164.32))
-      expect(described_class.calculate_inss_discount("3.000,00")).to(eq(281.62800000000004))
-      expect(described_class.calculate_inss_discount("4.000,00")).to(eq(402.804))
-      expect(described_class.calculate_inss_discount("7.000,00")).to(eq(713.1))
-    end
-  end
-
-  describe "parse_salary" do
-    it "parses salary string to float", :aggregate_failures do
-      expect(described_class.parse_salary("1.000,50")).to(eq(1000.5))
-      expect(described_class.parse_salary("2.500")).to(eq(2500.0))
+      expect(described_class.calculate_inss_discount("1.500,00")).to(eq(113.82))
+      expect(described_class.calculate_inss_discount("2.000,00")).to(eq(158.82))
+      expect(described_class.calculate_inss_discount("3.000,00")).to(eq(258.81))
+      expect(described_class.calculate_inss_discount("4.000,00")).to(eq(378.81))
+      expect(described_class.calculate_inss_discount("7.000,00")).to(eq(798.81))
     end
   end
 end

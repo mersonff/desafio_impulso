@@ -55,7 +55,7 @@ RSpec.describe(ProponentsController, type: :request) do
         proponents_path,
         params: { proponent: attributes_for(:proponent).except(:name).merge(name: "") },
       )
-      expect(response).to(have_http_status(:not_acceptable))
+      expect(response).to(have_http_status(:unprocessable_entity))
     end
   end
 
@@ -79,7 +79,7 @@ RSpec.describe(ProponentsController, type: :request) do
         proponent_path(create(:proponent)),
         params: { proponent: attributes_for(:proponent).except(:name).merge(name: "") },
       )
-      expect(response).to(have_http_status(:not_acceptable))
+      expect(response).to(have_http_status(:unprocessable_entity))
     end
   end
 

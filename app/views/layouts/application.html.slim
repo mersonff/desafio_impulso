@@ -1,25 +1,29 @@
 doctype html
-html
+html lang="pt-BR"
   head
-    title DasafioImpulso
+    title Sistema de Gestão de Proponentes
     meta name="viewport" content="width=device-width, initial-scale=1"
+    meta name="description" content="Sistema para gerenciar proponentes, calcular descontos de INSS e gerar relatórios"
     == csrf_meta_tags
     == csp_meta_tag
 
     link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
     link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"
 
     == stylesheet_link_tag "application", "data-turbo-track": "reload"
 
     == javascript_importmap_tags
-    script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+    script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
 
-  body
+  body.bg-light
     = render "layouts/navbar"
 
-    .container
-      div#flash
-        = render "layouts/flash"
+    main.container-fluid.px-4.py-3
+      div#flash.position-fixed.top-0.end-0.p-3 style="z-index: 1100;"
 
       == yield
+
+    // Modal container for Turbo Frames
+    div#modal_container
 

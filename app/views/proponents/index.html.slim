@@ -1,30 +1,37 @@
-.container.mt-4
-  h1
-    = t 'activerecord.models.proponent.other'
+= turbo_stream_from current_user, "proponents"
 
-  = turbo_stream_from current_user, "proponents"
+.d-flex.justify-content-between.align-items-center.mb-4
+  .d-flex.align-items-center
+    h1.h3.mb-0.fw-semibold.text-primary
+      i.bi.bi-people.me-2
+      = t 'activerecord.models.proponent.other'
+    .badge.bg-secondary.ms-3.fs-6
+      = current_user.proponents.count
+      |  proponentes
 
-  .row.mb-4
-    .col-md-8
-      = form_tag(proponents_path, method: :get, class: 'w-100') do
-        .input-group
-          = text_field_tag :search, params[:search], class: 'form-control'
-          .input-group-append.ms-2
-            = button_tag(type: 'submit', class: 'btn btn-outline-secondary') do
-              i.bi.bi-search
-    .col-md-4.d-flex.align-items-center.justify-content-end
-      = link_to t('activerecord.models.proponent.new'), new_proponent_path, class: 'btn btn-primary', data: { turbo_frame: "new_proponent" }
+  .d-flex.gap-2
+    = link_to report_proponents_path, class: 'btn btn-outline-primary' do
+      i.bi.bi-graph-up.me-1
+      | Relatórios
+    = link_to new_proponent_path, class: 'btn btn-primary shadow-sm', data: { turbo_frame: "modal", turbo_action: "advance" } do
+      i.bi.bi-plus-circle.me-1
+      | Novo Proponente
 
-  #new_proponent
-    = turbo_frame_tag "new_proponent" do
-      - if current_user.proponents.none?
-        = render "proponents/empty_state"
+.card.shadow-sm.mb-4
+  .card-body
+    = form_tag proponents_path, method: :get, local: true, data: { turbo_frame: "proponents", turbo_action: "advance" }, class: "d-flex gap-2" do
+      .flex-grow-1
+        = text_field_tag :search, params[:search],
+            placeholder: "Buscar por nome...",
+            class: "form-control",
+            data: { controller: "search", action: "keyup->search#submit", search_target: "input" }
+      = button_tag type: "submit", class: "btn btn-primary" do
+        i.bi.bi-search.me-1
+        | Buscar
 
-  #proponents
-    = turbo_frame_tag "proponents" do
-      = render @proponents
+= turbo_frame_tag "modal"
 
-  .d-flex.justify-content-center.mt-4
-    = paginate @proponents, theme: 'bootstrap-5', params: { turbo_frame: 'proponents' }
+= turbo_frame_tag "proponents" do
+  = render "proponents_list", proponents: @proponents
 
 

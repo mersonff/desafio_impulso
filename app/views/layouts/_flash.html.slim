@@ -1,4 +1,24 @@
-- flash.each do |flash_type, message|
-  .alert.alert-dismissible.fade.show(class= "alert-#{bootstrap_flash_class(flash_type)}" role= "alert" data-controller="removals" data-action="animationend->removals#remove")
-    = message
-    button.btn-close data-bs-dismiss="alert" aria-label="Close" type="button"
+- (flash || {}).each do |flash_type, message|
+  - next if message.blank?
+  .toast.align-items-center.border-0.show data-bs-delay="5000" data-controller="toast" data-action="hidden.bs.toast->toast#remove"
+    - if flash_type.to_s == 'notice'
+      .toast.text-bg-success
+        .d-flex
+          .toast-body.d-flex.align-items-center
+            i.bi.bi-check-circle-fill.me-2
+            = message
+          button.btn-close.btn-close-white.me-2.m-auto type="button" data-bs-dismiss="toast" aria-label="Close"
+    - elsif flash_type.to_s == 'alert' || flash_type.to_s == 'error'
+      .toast.text-bg-danger
+        .d-flex
+          .toast-body.d-flex.align-items-center
+            i.bi.bi-exclamation-triangle-fill.me-2
+            = message
+          button.btn-close.btn-close-white.me-2.m-auto type="button" data-bs-dismiss="toast" aria-label="Close"
+    - else
+      .toast.text-bg-primary
+        .d-flex
+          .toast-body.d-flex.align-items-center
+            i.bi.bi-info-circle-fill.me-2
+            = message
+          button.btn-close.btn-close-white.me-2.m-auto type="button" data-bs-dismiss="toast" aria-label="Close"

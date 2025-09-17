@@ -1,25 +1,30 @@
-br
-.nested-form-wrapper data-new-record=f.object.new_record?
-  .form-group
-    = f.input :zip_code, input_html: { data: { controller: 'mask search-address', mask_type_value: "zip_code", action: "input->search-address#search" } }
+.card.border-secondary.mb-3 data-new-record=f.object.new_record?
+  .card-header.bg-secondary.text-white.d-flex.justify-content-between.align-items-center
+    .d-flex.align-items-center
+      i.bi.bi-geo-alt.me-2
+      strong Endereço
+    button.btn.btn-sm.btn-outline-light type="button" data-action="nested-form#remove"
+      i.bi.bi-trash.me-1
+      | Remover
 
-  .form-group
-    = f.input :street
+  .card-body
+    .row.g-2
+      .col-md-4
+        = f.input :zip_code, input_html: { data: { controller: 'mask search-address', mask_type_value: "zip_code", action: "input->search-address#search" }, placeholder: "00000-000" }
 
-  .form-group
-    = f.input :number
+      .col-md-8
+        = f.input :street
 
-  .form-group
-    = f.input :neighborhood
+      .col-md-3
+        = f.input :number
 
-  .form-group
-    = f.input :city
+      .col-md-5
+        = f.input :neighborhood
 
-  .form-group
-    = f.input :state
+      .col-md-2
+        = f.input :state, collection: [['AC', 'AC'], ['AL', 'AL'], ['AP', 'AP'], ['AM', 'AM'], ['BA', 'BA'], ['CE', 'CE'], ['DF', 'DF'], ['ES', 'ES'], ['GO', 'GO'], ['MA', 'MA'], ['MT', 'MT'], ['MS', 'MS'], ['MG', 'MG'], ['PA', 'PA'], ['PB', 'PB'], ['PR', 'PR'], ['PE', 'PE'], ['PI', 'PI'], ['RJ', 'RJ'], ['RN', 'RN'], ['RS', 'RS'], ['RO', 'RO'], ['RR', 'RR'], ['SC', 'SC'], ['SP', 'SP'], ['SE', 'SE'], ['TO', 'TO']], prompt: 'UF'
 
-  br
+      .col-md-2
+        = f.input :city
 
-  .d-flex.justify-content-between.align-items-center
-    = f.hidden_field :_destroy
-    button.btn.btn-danger type="button" data-action="nested-form#remove" style="margin-bottom: 1em;" Remover Endereço 
+    = f.hidden_field :_destroy 

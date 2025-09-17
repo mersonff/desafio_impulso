@@ -1,16 +1,8 @@
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
+@import 'custom';
 
-.alert {
-  animation: slideOut 1.5s ease-out;
-}
-
-@keyframes slideOut {
-  to {
-    opacity: 0.2;
-    transform: translateY(-100%);
-  }
-}
+// Removed alert animation that was interfering with form validation errors
 
 .hidden {
   display: none;

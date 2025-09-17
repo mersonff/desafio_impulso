@@ -47,12 +47,7 @@ docker compose exec desafio_impulso rails db:create db:migrate
 docker compose exec desafio_impulso rails dev:prime
 ```
 
-6. Configure o Elasticsearch:
-```bash
-docker compose exec desafio_impulso rails searchkick:reindex:all
-```
-
-7. Acesse a aplicação em http://localhost:3333
+6. Acesse a aplicação em http://localhost:3333
 
 ## 👤 Autenticação
 

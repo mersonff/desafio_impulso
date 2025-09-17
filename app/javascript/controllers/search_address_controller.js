@@ -7,6 +7,7 @@ export default class extends Controller {
   }
 
   search(event) {
+    // Don't prevent default or stop propagation - let normal input behavior continue
     console.log('search_address');
     const zipCodeInput = event.currentTarget;
 
@@ -23,7 +24,8 @@ export default class extends Controller {
       .then(data => {
         console.log(data);
         if (data.erro) {
-          alert('CEP não encontrado');
+          // Use a more subtle notification instead of alert
+          this.showNotification('CEP não encontrado', 'error');
         } else {
           const zipCodeFragmentId = zipCodeInput.id.split('attributes_')[1];
           const numberFromId = zipCodeFragmentId.split('_')[0];
@@ -32,6 +34,8 @@ export default class extends Controller {
             const relatedElement = document.querySelector(`[id$=_${numberFromId}_${suffix}]`);
             if (relatedElement) {
               relatedElement.value = value;
+              // Dispatch input event to trigger any other controllers
+              relatedElement.dispatchEvent(new Event('input', { bubbles: true }));
             }
           };
 
@@ -42,9 +46,38 @@ export default class extends Controller {
 
           const numberElement = document.querySelector(`[id$=_${numberFromId}_number]`);
           if (numberElement) {
-            numberElement.focus();
+            // Use setTimeout to avoid any timing issues with focus
+            setTimeout(() => {
+              numberElement.focus();
+            }, 100);
           }
+
+          this.showNotification('Endereço preenchido automaticamente', 'success');
         }
+      })
+      .catch(error => {
+        console.error('Erro ao buscar CEP:', error);
+        this.showNotification('Erro ao buscar CEP', 'error');
       });
+  }
+
+  showNotification(message, type) {
+    // Create a subtle notification without using alert
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.remove();
+      }
+    }, 3000);
   }
 }

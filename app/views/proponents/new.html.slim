@@ -1,2 +1,12 @@
-= turbo_frame_tag "new_proponent" do
-  = render 'form', proponent: @proponent
+= turbo_frame_tag "modal" do
+  .modal.d-block data-controller="modal" data-action="keydown.esc@window->modal#close" style="z-index: 1050;"
+    .modal-dialog.modal-lg.modal-dialog-scrollable.fade
+      .modal-content.border-0.shadow
+        .modal-header.bg-primary.text-white
+          h5.modal-title.d-flex.align-items-center
+            i.bi.bi-person-plus.me-2
+            | Novo Proponente
+          button.btn-close.btn-close-white type="button" data-action="modal#close"
+
+        .modal-body.p-4
+          = render 'form', proponent: @proponent
