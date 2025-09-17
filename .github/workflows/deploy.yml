@@ -59,10 +59,8 @@ jobs:
           --region $REGION \
           --set-env-vars RAILS_ENV=production \
           --set-secrets DATABASE_URL=database-url:latest,SECRET_KEY_BASE=rails-master-key:latest \
-          --command bundle,exec,rails,db:migrate \
+          --args bundle,exec,rails,db:migrate \
           --max-retries 1 \
-          --parallelism 1 \
-          --task-count 1 \
           --cpu 1 \
           --memory 512Mi \
           --task-timeout 600 || true
