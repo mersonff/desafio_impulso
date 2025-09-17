@@ -7,15 +7,18 @@ class HealthController < ApplicationController
     checks = {
       database: database_check,
       redis: redis_check,
-      timestamp: Time.current.iso8601
+      timestamp: Time.current.iso8601,
     }
 
     status = checks.values.all? ? :ok : :service_unavailable
 
-    render json: {
-      status: status == :ok ? "healthy" : "unhealthy",
-      checks: checks
-    }, status: status
+    render(
+      json: {
+        status: status == :ok ? "healthy" : "unhealthy",
+        checks: checks,
+      },
+      status: status,
+    )
   end
 
   private
@@ -24,14 +27,14 @@ class HealthController < ApplicationController
     ActiveRecord::Base.connection.execute("SELECT 1")
     true
   rescue StandardError => e
-    Rails.logger.error "Database health check failed: #{e.message}"
+    Rails.logger.error("Database health check failed: #{e.message}")
     false
   end
 
   def redis_check
     Redis.current.ping == "PONG"
   rescue StandardError => e
-    Rails.logger.error "Redis health check failed: #{e.message}"
+    Rails.logger.error("Redis health check failed: #{e.message}")
     false
   end
 end
