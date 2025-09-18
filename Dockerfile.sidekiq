@@ -14,6 +14,7 @@ RUN apt-get update -qq && \
     libffi-dev \
     git \
     curl \
+    netcat-openbsd \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
@@ -31,12 +32,11 @@ RUN gem install bundler -v $BUNDLER_VERSION && \
 # Copy application code
 COPY . .
 
+# Make start script executable
+RUN chmod +x start_sidekiq.sh
+
 # Expose port for health checks
 EXPOSE 8080
 
-# Health check endpoint for Sidekiq
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD bundle exec sidekiq-healthcheck || exit 1
-
-# Start Sidekiq
-CMD ["bundle", "exec", "sidekiq", "-c", "5"]
+# Start Sidekiq with health check server
+CMD ["./start_sidekiq.sh"]

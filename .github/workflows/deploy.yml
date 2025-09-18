@@ -89,13 +89,13 @@ jobs:
 
     - name: Run Database Migrations
       run: |
+        gcloud run jobs delete rails-migrate-job --region=$REGION --quiet || true
+
         gcloud run jobs create rails-migrate-job \
           --image=${{ needs.build.outputs.rails-image }} \
           --region=$REGION \
           --set-env-vars="RAILS_ENV=production,DATABASE_URL=$DATABASE_URL,SECRET_KEY_BASE=$SECRET_KEY_BASE" \
-          --vpc-connector=projects/$PROJECT_ID/locations/$REGION/connectors/redis-connector \
-          --command="bundle,exec,rails,db:migrate" \
-          --replace || true
+          --command="bundle,exec,rails,db:migrate"
 
         gcloud run jobs execute rails-migrate-job --region=$REGION --wait
 
@@ -106,9 +106,7 @@ jobs:
           --region=$REGION \
           --platform=managed \
           --allow-unauthenticated \
-          --set-env-vars="RAILS_ENV=production,RAILS_SERVE_STATIC_FILES=true,RAILS_LOG_TO_STDOUT=true" \
-          --set-env-vars="DATABASE_URL=$DATABASE_URL,SECRET_KEY_BASE=$SECRET_KEY_BASE,REDIS_URL=$REDIS_URL" \
-          --vpc-connector=projects/$PROJECT_ID/locations/$REGION/connectors/redis-connector \
+          --set-env-vars="RAILS_ENV=production,RAILS_SERVE_STATIC_FILES=true,RAILS_LOG_TO_STDOUT=true,DATABASE_URL=$DATABASE_URL,SECRET_KEY_BASE=$SECRET_KEY_BASE" \
           --memory=1Gi \
           --cpu=1 \
           --min-instances=0 \
@@ -117,26 +115,17 @@ jobs:
 
     - name: Deploy Sidekiq Worker to Cloud Run
       run: |
-        gcloud run deploy $SIDEKIQ_SERVICE \
-          --image=${{ needs.build.outputs.sidekiq-image }} \
-          --region=$REGION \
-          --platform=managed \
-          --no-allow-unauthenticated \
-          --set-env-vars="RAILS_ENV=production,RAILS_LOG_TO_STDOUT=true" \
-          --set-env-vars="DATABASE_URL=$DATABASE_URL,SECRET_KEY_BASE=$SECRET_KEY_BASE,REDIS_URL=$REDIS_URL" \
-          --vpc-connector=projects/$PROJECT_ID/locations/$REGION/connectors/redis-connector \
-          --memory=512Mi \
-          --cpu=1 \
-          --min-instances=1 \
-          --max-instances=5 \
-          --port=8080
+        echo "⚠️ Sidekiq deployment temporarily disabled - needs Redis setup"
+        echo "Sidekiq image available: ${{ needs.build.outputs.sidekiq-image }}"
 
     - name: Deployment Summary
       run: |
         RAILS_URL=$(gcloud run services describe $RAILS_SERVICE --region=$REGION --format='value(status.url)')
         echo "🎉 Cloud Run deployment completed!"
         echo "📍 Rails App URL: $RAILS_URL"
-        echo "⚡ Sidekiq Worker: $SIDEKIQ_SERVICE (internal)"
+        echo "⚡ Sidekiq Worker: Image ready, Redis setup needed"
         echo "🗄️ Database: Cloud SQL PostgreSQL"
-        echo "🔴 Redis: Memorystore via VPC Connector"
         echo "💰 Cost: Pay-per-use (Rails scales to 0)"
+        echo ""
+        echo "✅ Rails app deployed and separated from Sidekiq"
+        echo "📦 Both Docker images built and pushed successfully"
