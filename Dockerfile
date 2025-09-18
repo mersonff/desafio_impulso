@@ -17,6 +17,7 @@ RUN apt-get update -qq && \
     npm \
     git \
     curl \
+    && npm install -g yarn \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
@@ -34,8 +35,9 @@ RUN gem install bundler -v $BUNDLER_VERSION && \
 # Copy application code
 COPY . .
 
-# Precompile assets
-RUN SECRET_KEY_BASE=dummy bundle exec rails assets:precompile
+# Install Node.js dependencies and precompile assets
+RUN yarn install --frozen-lockfile && \
+    RAILS_ENV=production SECRET_KEY_BASE=$(openssl rand -hex 64) bundle exec rails assets:precompile
 
 # Health check endpoint
 RUN echo "Rails.application.routes.draw { get '/up', to: 'rails/health#show', as: :rails_health_check }" >> config/routes.rb
