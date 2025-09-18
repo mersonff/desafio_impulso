@@ -1,0 +1,36 @@
+runtime: ruby32
+env: standard
+
+instance_class: F1
+
+automatic_scaling:
+  min_instances: 0
+  max_instances: 2
+  target_cpu_utilization: 0.8
+  target_throughput_utilization: 0.8
+
+env_variables:
+  RAILS_ENV: production
+  RAILS_SERVE_STATIC_FILES: true
+  RAILS_LOG_TO_STDOUT: true
+
+service_timeout: 3600s
+
+liveness_check:
+  path: "/health"
+  check_interval_sec: 30
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 1
+
+readiness_check:
+  path: "/health"
+  check_interval_sec: 5
+  timeout_sec: 4
+  failure_threshold: 2
+  success_threshold: 1
+  app_start_timeout_sec: 300
+
+resources:
+  cpu: 1
+  memory_gb: 0.5

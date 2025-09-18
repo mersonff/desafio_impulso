@@ -8,6 +8,7 @@
 /.bundle
 
 # Ignore all environment files (except templates).
+env_variables.yaml
 /.env*
 !/.env*.erb
 
