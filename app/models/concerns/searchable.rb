@@ -7,6 +7,6 @@ module Searchable
     include Elasticsearch::Model
     include Elasticsearch::Model::Callbacks
 
-    import(force: true) unless Rails.env.test?
+    import(force: true) if Rails.env.development?
   end
 end
