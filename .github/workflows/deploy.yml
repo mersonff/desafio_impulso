@@ -50,6 +50,12 @@ jobs:
         echo "  SECRET_KEY_BASE: \"$SECRET_KEY_BASE\"" >> app.yaml.tmp
         echo "  REDIS_URL: \"$REDIS_URL\"" >> app.yaml.tmp
 
+        # Debug: verificar se arquivo foi criado
+        echo "=== Conteúdo do app.yaml.tmp ==="
+        cat app.yaml.tmp
+        echo "=== Fim do arquivo ==="
+        ls -la app.yaml*
+
         # Deploy usando o app.yaml com secrets
         gcloud app deploy app.yaml.tmp --quiet --promote
 
