@@ -1,9 +1,8 @@
-# Rails App Dockerfile for Cloud Run
+# Sidekiq Worker Dockerfile for Cloud Run
 FROM ruby:3.2.9-slim
 
 ENV BUNDLER_VERSION='2.4.22'
 ENV RAILS_ENV=production
-ENV RAILS_SERVE_STATIC_FILES=true
 ENV RAILS_LOG_TO_STDOUT=true
 
 # Install system dependencies
@@ -11,8 +10,6 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
-    nodejs \
-    npm \
     git \
     curl \
     && rm -rf /var/lib/apt/lists/* \
@@ -32,14 +29,12 @@ RUN gem install bundler -v $BUNDLER_VERSION && \
 # Copy application code
 COPY . .
 
-# Precompile assets
-RUN SECRET_KEY_BASE=dummy bundle exec rails assets:precompile
-
-# Health check endpoint
-RUN echo "Rails.application.routes.draw { get '/up', to: 'rails/health#show', as: :rails_health_check }" >> config/routes.rb
-
-# Expose Cloud Run port
+# Expose port for health checks
 EXPOSE 8080
 
-# Start Rails server
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "8080"]
+# Health check endpoint for Sidekiq
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD bundle exec sidekiq-healthcheck || exit 1
+
+# Start Sidekiq
+CMD ["bundle", "exec", "sidekiq", "-c", "5"]
