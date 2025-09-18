@@ -54,8 +54,15 @@ jobs:
     - name: Set Build Info
       id: build-info
       run: |
-        echo "rails-image=$REGION-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$RAILS_SERVICE:$GITHUB_SHA" >> $GITHUB_OUTPUT
-        echo "sidekiq-image=$REGION-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$SIDEKIQ_SERVICE:$GITHUB_SHA" >> $GITHUB_OUTPUT
+        RAILS_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$RAILS_SERVICE:$GITHUB_SHA"
+        SIDEKIQ_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$SIDEKIQ_SERVICE:$GITHUB_SHA"
+
+        echo "rails-image=$RAILS_IMAGE" >> $GITHUB_OUTPUT
+        echo "sidekiq-image=$SIDEKIQ_IMAGE" >> $GITHUB_OUTPUT
+
+        echo "🔨 Build completed:"
+        echo "  Rails: $RAILS_IMAGE"
+        echo "  Sidekiq: $SIDEKIQ_IMAGE"
 
   deploy:
     name: 🚀 Deploy to Cloud Run
@@ -89,10 +96,12 @@ jobs:
 
     - name: Run Database Migrations
       run: |
+        echo "Rails image: ${{ needs.build.outputs.rails-image }}"
+
         gcloud run jobs delete rails-migrate-job --region=$REGION --quiet || true
 
         gcloud run jobs create rails-migrate-job \
-          --image=${{ needs.build.outputs.rails-image }} \
+          --image="${{ needs.build.outputs.rails-image }}" \
           --region=$REGION \
           --set-env-vars="RAILS_ENV=production,DATABASE_URL=$DATABASE_URL,SECRET_KEY_BASE=$SECRET_KEY_BASE" \
           --command="bundle,exec,rails,db:migrate"
@@ -101,8 +110,10 @@ jobs:
 
     - name: Deploy Rails App to Cloud Run
       run: |
+        echo "Deploying Rails image: ${{ needs.build.outputs.rails-image }}"
+
         gcloud run deploy $RAILS_SERVICE \
-          --image=${{ needs.build.outputs.rails-image }} \
+          --image="${{ needs.build.outputs.rails-image }}" \
           --region=$REGION \
           --platform=managed \
           --allow-unauthenticated \
