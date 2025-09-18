@@ -55,5 +55,5 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:${PORT:-8080}/health || exit 1
 
-# Start server directly (Puma usa ENV["PORT"] automaticamente)
-CMD ["sh", "-c", "echo 'Starting Rails on port '${PORT:-8080}' for environment '${RAILS_ENV:-production} && bundle exec rails server -b 0.0.0.0"]
+# Start Rails server directly
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]

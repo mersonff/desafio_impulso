@@ -5,12 +5,13 @@ set -e
 
 echo "🚀 Iniciando aplicação..."
 
-# Log da configuração em produção
+# Log da configuração
+echo "🔍 Rails Environment: ${RAILS_ENV:-development}"
+echo "🌐 Port: ${PORT:-8080}"
 if [ "$RAILS_ENV" = "production" ]; then
   echo "🔍 Database URL configurada"
-  echo "🌐 Port: ${PORT:-3000}"
-  echo "✅ Iniciando aplicação Rails..."
 fi
+echo "✅ Iniciando aplicação Rails..."
 
 # If running the rails server then create or migrate existing database
 if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
