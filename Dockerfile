@@ -11,6 +11,8 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
     build-essential \
     libpq-dev \
+    libyaml-dev \
+    libffi-dev \
     nodejs \
     npm \
     git \
