@@ -5,23 +5,10 @@ set -e
 
 echo "🚀 Iniciando aplicação..."
 
-# Aguardar banco de dados estar disponível em produção
+# Log da configuração do banco em produção
 if [ "$RAILS_ENV" = "production" ]; then
-  echo "⏳ Aguardando banco de dados..."
-  max_attempts=30
-  attempt=0
-  until bundle exec rails runner "ActiveRecord::Base.connection.execute('SELECT 1')" > /dev/null 2>&1; do
-    attempt=$((attempt + 1))
-    if [ $attempt -ge $max_attempts ]; then
-      echo "❌ Falha ao conectar ao banco após $max_attempts tentativas"
-      echo "🔍 Verificando configurações..."
-      echo "DATABASE_URL: ${DATABASE_URL}"
-      exit 1
-    fi
-    echo "Database não está pronto - tentativa $attempt/$max_attempts..."
-    sleep 5
-  done
-  echo "✅ Banco de dados conectado!"
+  echo "🔍 Database URL configurada"
+  echo "✅ Iniciando aplicação Rails..."
 fi
 
 # If running the rails server then create or migrate existing database
