@@ -8,7 +8,13 @@ echo "🚀 Iniciando aplicação..."
 # Log da configuração do banco em produção
 if [ "$RAILS_ENV" = "production" ]; then
   echo "🔍 Database URL configurada"
+  echo "🌐 Port: ${PORT:-3000}"
   echo "✅ Iniciando aplicação Rails..."
+fi
+
+# Se o comando for o rails server, adicionar a porta dinamicamente
+if [ "${1}" == "bundle" ] && [ "${2}" == "exec" ] && [ "${3}" == "rails" ] && [ "${4}" == "server" ]; then
+  set -- "$1" "$2" "$3" "$4" "-p" "${PORT:-3000}" "${@:5}"
 fi
 
 # If running the rails server then create or migrate existing database

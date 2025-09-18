@@ -88,12 +88,11 @@ jobs:
     - name: Deploy to Cloud Run
       run: |
         gcloud run deploy $SERVICE \
-          --port 3000 \
           --image $GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/images/$SERVICE:$GITHUB_SHA \
           --allow-unauthenticated \
           --region $REGION \
           --platform managed \
-          --set-env-vars RAILS_ENV=production,RAILS_SERVE_STATIC_FILES=true,RAILS_LOG_TO_STDOUT=true,PORT=3000 \
+          --set-env-vars RAILS_ENV=production,RAILS_SERVE_STATIC_FILES=true,RAILS_LOG_TO_STDOUT=true \
           --set-secrets DATABASE_URL=database-url:latest,SECRET_KEY_BASE=rails-master-key:latest,REDIS_URL=redis-url:latest \
           --add-cloudsql-instances $PROJECT_ID:$REGION:desafio-impulso-db \
           --memory 1Gi \

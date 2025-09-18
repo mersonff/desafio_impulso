@@ -58,4 +58,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
 # Set entrypoint
 ENTRYPOINT ["./bin/docker-entrypoint"]
 
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
