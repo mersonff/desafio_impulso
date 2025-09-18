@@ -32,21 +32,6 @@ jobs:
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v1'
 
-    - name: Run Database Migrations
-      run: |
-        gcloud run jobs create migrate-job-$GITHUB_SHA \
-          --image us-central1-docker.pkg.dev/$PROJECT_ID/images/desafio-impulso:latest \
-          --region us-central1 \
-          --set-env-vars RAILS_ENV=production \
-          --set-secrets DATABASE_URL=database-url:latest,SECRET_KEY_BASE=rails-master-key:latest \
-          --args bundle,exec,rails,db:migrate \
-          --max-retries 1 \
-          --cpu 1 \
-          --memory 512Mi \
-          --task-timeout 600 || true
-
-        gcloud run jobs execute migrate-job-$GITHUB_SHA --region us-central1 --wait
-
     - name: Deploy to App Engine
       run: |
         export DATABASE_URL=$(gcloud secrets versions access latest --secret=database-url)
@@ -56,9 +41,9 @@ jobs:
         gcloud app deploy --quiet --promote \
           --set-env-vars DATABASE_URL="$DATABASE_URL",SECRET_KEY_BASE="$SECRET_KEY_BASE",REDIS_URL="$REDIS_URL"
 
-    - name: Clean up old migration jobs
+    - name: Deployment Summary
       run: |
-        # Remove migration jobs older than current
-        gcloud run jobs list --region=$REGION --format="value(name)" | grep "migrate-job-" | grep -v "migrate-job-$GITHUB_SHA" | head -5 | while read job; do
-          gcloud run jobs delete $job --region=$REGION --quiet || true
-        done
+        echo "🎉 App Engine deployment completed!"
+        echo "📍 Application URL: https://$PROJECT_ID.appspot.com"
+        echo "💰 Instance class: F1 (most cost-effective)"
+        echo "⚡ Sidekiq: Running embedded within Rails app"
