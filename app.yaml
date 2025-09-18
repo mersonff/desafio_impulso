@@ -13,12 +13,6 @@ automatic_scaling:
   max_instances: 2
   target_cpu_utilization: 0.8
   target_throughput_utilization: 0.8
-
-env_variables:
-  RAILS_ENV: production
-  RAILS_SERVE_STATIC_FILES: true
-  RAILS_LOG_TO_STDOUT: true
-
 service_timeout: 3600s
 
 liveness_check:

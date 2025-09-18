@@ -34,12 +34,27 @@ jobs:
 
     - name: Deploy to App Engine
       run: |
-        export DATABASE_URL=$(gcloud secrets versions access latest --secret=database-url)
-        export SECRET_KEY_BASE=$(gcloud secrets versions access latest --secret=rails-master-key)
-        export REDIS_URL=$(gcloud secrets versions access latest --secret=redis-url)
+        # Buscar secrets do Secret Manager
+        DATABASE_URL=$(gcloud secrets versions access latest --secret=database-url)
+        SECRET_KEY_BASE=$(gcloud secrets versions access latest --secret=rails-master-key)
+        REDIS_URL=$(gcloud secrets versions access latest --secret=redis-url)
 
-        gcloud app deploy --quiet --promote \
-          --set-env-vars DATABASE_URL="$DATABASE_URL",SECRET_KEY_BASE="$SECRET_KEY_BASE",REDIS_URL="$REDIS_URL"
+        # Criar app.yaml temporário com secrets injetadas
+        cp app.yaml app.yaml.tmp
+        cat >> app.yaml.tmp << EOF
+
+env_variables:
+  RAILS_ENV: production
+  RAILS_SERVE_STATIC_FILES: "true"
+  RAILS_LOG_TO_STDOUT: "true"
+  DATABASE_URL: "$DATABASE_URL"
+  SECRET_KEY_BASE: "$SECRET_KEY_BASE"
+  REDIS_URL: "$REDIS_URL"
+EOF
+
+        gcloud app deploy app.yaml.tmp --quiet --promote
+
+        rm app.yaml.tmp
 
     - name: Deployment Summary
       run: |
