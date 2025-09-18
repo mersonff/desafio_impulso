@@ -3,8 +3,8 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  # Health check endpoint
   get "health", to: "health#show"
+  get "health/deep", to: "health#deep"
 
   resources :proponents, except: [:show] do
     resources :addresses, except: [:show, :index]

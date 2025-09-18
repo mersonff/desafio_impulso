@@ -4,6 +4,17 @@ class HealthController < ApplicationController
   skip_before_action :authenticate_user!
 
   def show
+    render(
+      json: {
+        status: "healthy",
+        timestamp: Time.current.iso8601,
+        rails_env: Rails.env,
+      },
+      status: :ok,
+    )
+  end
+
+  def deep
     checks = {
       database: database_check,
       redis: redis_check,
