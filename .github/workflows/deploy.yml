@@ -39,28 +39,24 @@ jobs:
         SECRET_KEY_BASE=$(gcloud secrets versions access latest --secret=rails-master-key)
         REDIS_URL=$(gcloud secrets versions access latest --secret=redis-url)
 
-        # Criar app.yaml temporário com secrets injetadas
-        cp app.yaml app.yaml.tmp
-        echo "" >> app.yaml.tmp
-        echo "env_variables:" >> app.yaml.tmp
-        echo "  RAILS_ENV: production" >> app.yaml.tmp
-        echo "  RAILS_SERVE_STATIC_FILES: \"true\"" >> app.yaml.tmp
-        echo "  RAILS_LOG_TO_STDOUT: \"true\"" >> app.yaml.tmp
-        echo "  DATABASE_URL: \"$DATABASE_URL\"" >> app.yaml.tmp
-        echo "  SECRET_KEY_BASE: \"$SECRET_KEY_BASE\"" >> app.yaml.tmp
-        echo "  REDIS_URL: \"$REDIS_URL\"" >> app.yaml.tmp
+        # Backup do app.yaml original
+        cp app.yaml app.yaml.bak
 
-        # Debug: verificar se arquivo foi criado
-        echo "=== Conteúdo do app.yaml.tmp ==="
-        cat app.yaml.tmp
-        echo "=== Fim do arquivo ==="
-        ls -la app.yaml*
+        # Adicionar secrets ao app.yaml
+        echo "" >> app.yaml
+        echo "env_variables:" >> app.yaml
+        echo "  RAILS_ENV: production" >> app.yaml
+        echo "  RAILS_SERVE_STATIC_FILES: \"true\"" >> app.yaml
+        echo "  RAILS_LOG_TO_STDOUT: \"true\"" >> app.yaml
+        echo "  DATABASE_URL: \"$DATABASE_URL\"" >> app.yaml
+        echo "  SECRET_KEY_BASE: \"$SECRET_KEY_BASE\"" >> app.yaml
+        echo "  REDIS_URL: \"$REDIS_URL\"" >> app.yaml
 
-        # Deploy usando o app.yaml com secrets
-        gcloud app deploy app.yaml.tmp --quiet --promote
+        # Deploy usando o app.yaml modificado
+        gcloud app deploy --quiet --promote
 
-        # Limpar arquivo temporário
-        rm app.yaml.tmp
+        # Restaurar app.yaml original
+        mv app.yaml.bak app.yaml
 
     - name: Deployment Summary
       run: |
