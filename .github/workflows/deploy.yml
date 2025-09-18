@@ -41,16 +41,14 @@ jobs:
 
         # Criar app.yaml temporário com secrets injetadas
         cp app.yaml app.yaml.tmp
-        cat >> app.yaml.tmp << 'EOF'
-
-        env_variables:
-          RAILS_ENV: production
-          RAILS_SERVE_STATIC_FILES: "true"
-          RAILS_LOG_TO_STDOUT: "true"
-          DATABASE_URL: "$DATABASE_URL"
-          SECRET_KEY_BASE: "$SECRET_KEY_BASE"
-          REDIS_URL: "$REDIS_URL"
-        EOF
+        echo "" >> app.yaml.tmp
+        echo "env_variables:" >> app.yaml.tmp
+        echo "  RAILS_ENV: production" >> app.yaml.tmp
+        echo "  RAILS_SERVE_STATIC_FILES: \"true\"" >> app.yaml.tmp
+        echo "  RAILS_LOG_TO_STDOUT: \"true\"" >> app.yaml.tmp
+        echo "  DATABASE_URL: \"$DATABASE_URL\"" >> app.yaml.tmp
+        echo "  SECRET_KEY_BASE: \"$SECRET_KEY_BASE\"" >> app.yaml.tmp
+        echo "  REDIS_URL: \"$REDIS_URL\"" >> app.yaml.tmp
 
         # Deploy usando o app.yaml com secrets
         gcloud app deploy app.yaml.tmp --quiet --promote
