@@ -1,4 +1,4 @@
-FROM ruby:3.2.2
+FROM ruby:3.2.9
 
 ENV BUNDLER_VERSION='2.4.22'
 

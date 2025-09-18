@@ -1,4 +1,4 @@
-FROM ruby:3.2.2-slim
+FROM ruby:3.2.9-slim
 
 ENV RAILS_ENV=production
 ENV BUNDLER_VERSION='2.4.22'

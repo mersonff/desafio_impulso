@@ -4,7 +4,7 @@ Sistema desenvolvido para gerenciar proponentes, calcular descontos de INSS e ge
 
 ## 🚀 Tecnologias
 
-- Ruby 3.2.2
+- Ruby 3.2.9
 - Rails 7.1.2
 - PostgreSQL
 - Elasticsearch
