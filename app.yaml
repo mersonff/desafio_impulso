@@ -6,11 +6,6 @@ instance_class: F1
 beta_settings:
   cloud_sql_instances: news-aggregator-447817:us-central:desafio-impulso-db
 
-env_variables:
-  RAILS_ENV: production
-  RAILS_SERVE_STATIC_FILES: true
-  RAILS_LOG_TO_STDOUT: true
-
 entrypoint: bundle exec rails db:migrate && bundle exec rails server -b 0.0.0.0
 
 automatic_scaling:
