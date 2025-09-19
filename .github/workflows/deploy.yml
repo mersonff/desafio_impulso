@@ -103,12 +103,14 @@ jobs:
 
     - name: Run Database Migrations
       run: |
-        echo "Rails image: ${{ needs.build.outputs.rails-image }}"
+        RAILS_IMAGE="us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/desafio-impulso-rails:${{ github.sha }}"
+        echo "Rails image: $RAILS_IMAGE"
+        echo "Build output was: ${{ needs.build.outputs.rails-image }}"
 
         gcloud run jobs delete rails-migrate-job --region=$REGION --quiet || true
 
         gcloud run jobs create rails-migrate-job \
-          --image="${{ needs.build.outputs.rails-image }}" \
+          --image="$RAILS_IMAGE" \
           --region=$REGION \
           --set-env-vars="RAILS_ENV=production,DATABASE_URL=$DATABASE_URL,SECRET_KEY_BASE=$SECRET_KEY_BASE" \
           --command="bundle,exec,rails,db:migrate"
@@ -117,10 +119,12 @@ jobs:
 
     - name: Deploy Rails App to Cloud Run
       run: |
-        echo "Deploying Rails image: ${{ needs.build.outputs.rails-image }}"
+        RAILS_IMAGE="us-central1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/desafio-impulso-rails:${{ github.sha }}"
+        echo "Deploying Rails image: $RAILS_IMAGE"
+        echo "Build output was: ${{ needs.build.outputs.rails-image }}"
 
         gcloud run deploy $RAILS_SERVICE \
-          --image="${{ needs.build.outputs.rails-image }}" \
+          --image="$RAILS_IMAGE" \
           --region=$REGION \
           --platform=managed \
           --allow-unauthenticated \
