@@ -54,17 +54,23 @@ class Proponent < ApplicationRecord
     end
 
     def search(query)
-      params = {
-        query: {
-          multi_match: {
-            query: query,
-            fields: ["name"],
-            fuzziness: "AUTO",
+      # Use Elasticsearch if available, otherwise fallback to database search
+      if ENV["ELASTICSEARCH_URL"].present? && respond_to?(:__elasticsearch__)
+        params = {
+          query: {
+            multi_match: {
+              query: query,
+              fields: ["name"],
+              fuzziness: "AUTO",
+            },
           },
-        },
-      }
+        }
 
-      __elasticsearch__.search(params).records.to_a
+        __elasticsearch__.search(params).records.to_a
+      else
+        # Fallback to database ILIKE search
+        where("name ILIKE ?", "%#{query}%").order(name: :asc).to_a
+      end
     end
   end
 end
