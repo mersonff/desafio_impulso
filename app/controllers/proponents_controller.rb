@@ -40,7 +40,7 @@ class ProponentsController < ApplicationController
         end
         format.turbo_stream do
           message = t("flash.actions.create.notice", resource_name: Proponent.model_name.human)
-          @proponents = current_user.proponents.page(params[:page]).per(5)
+          @proponents = current_user.proponents.order(name: :asc).page(params[:page]).per(5)
 
           streams = []
           streams << turbo_stream.update("proponents", partial: "proponents_list", locals: { proponents: @proponents })
@@ -113,7 +113,7 @@ class ProponentsController < ApplicationController
       end
       format.turbo_stream do
         message = t("flash.actions.destroy.notice", resource_name: Proponent.model_name.human)
-        @proponents = current_user.proponents.page(params[:page]).per(5)
+        @proponents = current_user.proponents.order(name: :asc).page(params[:page]).per(5)
 
         streams = []
         streams << turbo_stream.update("proponents", partial: "proponents_list", locals: { proponents: @proponents })

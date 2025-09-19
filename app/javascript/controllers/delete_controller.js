@@ -123,6 +123,7 @@ export default class extends Controller {
         // Add exit animation and grid reflow
         this.animateExitWithReflow()
       } else {
+        console.error('Delete failed with status:', response.status)
         this.showError('Erro ao excluir o proponente.')
       }
     } catch (error) {
