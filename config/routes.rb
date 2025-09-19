@@ -1,7 +1,14 @@
 # frozen_string_literal: true
 
+require "sidekiq/web"
+
 Rails.application.routes.draw do
   devise_for :users
+
+  # Sidekiq Web UI (requires authentication)
+  authenticate :user do
+    mount Sidekiq::Web => '/sidekiq'
+  end
 
   get "health", to: "health#show"
   get "health/deep", to: "health#deep"

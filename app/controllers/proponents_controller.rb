@@ -145,7 +145,11 @@ class ProponentsController < ApplicationController
     discount = Proponent.calculate_inss_discount(salary)
 
     # Envia o cálculo para o job em segundo plano para atualização futura
-    CalculateDiscountJob.perform_async(salary)
+    begin
+      CalculateDiscountJob.perform_async(salary) if ENV['REDIS_URL'].present?
+    rescue Redis::CannotConnectError => e
+      Rails.logger.warn "Redis not available: #{e.message}"
+    end
 
     respond_to do |format|
       format.json do
