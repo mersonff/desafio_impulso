@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   # Sidekiq Web UI (requires authentication)
   authenticate :user do
-    mount Sidekiq::Web => '/sidekiq'
+    mount Sidekiq::Web => "/sidekiq"
   end
 
   get "health", to: "health#show"

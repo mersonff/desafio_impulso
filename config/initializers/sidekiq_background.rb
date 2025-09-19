@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Configura Sidekiq para rodar em background no App Engine
-if Rails.env.production? && ENV["GAE_SERVICE"] == "default"
+# Configura Sidekiq para rodar em background no Cloud Run (apenas no serviço Rails)
+if Rails.env.production? && ENV["K_SERVICE"] == "desafio-impulso-rails"
   Rails.application.config.after_initialize do
     # Configurar Sidekiq Redis
     Sidekiq.configure_server do |config|
