@@ -21,6 +21,9 @@ jobs:
       contents: read
       id-token: write
 
+    env:
+      PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+
     outputs:
       rails-image: ${{ steps.build-info.outputs.rails-image }}
       sidekiq-image: ${{ steps.build-info.outputs.sidekiq-image }}
@@ -43,19 +46,23 @@ jobs:
 
     - name: Build and Push Rails Image
       run: |
-        docker build -t $REGION-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$RAILS_SERVICE:$GITHUB_SHA .
-        docker push $REGION-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$RAILS_SERVICE:$GITHUB_SHA
+        RAILS_IMAGE="us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/desafio-impulso-rails:${{ github.sha }}"
+        echo "Building Rails image: $RAILS_IMAGE"
+        docker build -t $RAILS_IMAGE .
+        docker push $RAILS_IMAGE
 
     - name: Build and Push Sidekiq Image
       run: |
-        docker build -f Dockerfile.sidekiq -t $REGION-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$SIDEKIQ_SERVICE:$GITHUB_SHA .
-        docker push $REGION-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$SIDEKIQ_SERVICE:$GITHUB_SHA
+        SIDEKIQ_IMAGE="us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/desafio-impulso-sidekiq:${{ github.sha }}"
+        echo "Building Sidekiq image: $SIDEKIQ_IMAGE"
+        docker build -f Dockerfile.sidekiq -t $SIDEKIQ_IMAGE .
+        docker push $SIDEKIQ_IMAGE
 
     - name: Set Build Info
       id: build-info
       run: |
-        RAILS_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$RAILS_SERVICE:$GITHUB_SHA"
-        SIDEKIQ_IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/$SIDEKIQ_SERVICE:$GITHUB_SHA"
+        RAILS_IMAGE="us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/desafio-impulso-rails:${{ github.sha }}"
+        SIDEKIQ_IMAGE="us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/cloud-run-source-deploy/desafio-impulso-sidekiq:${{ github.sha }}"
 
         echo "rails-image=$RAILS_IMAGE" >> $GITHUB_OUTPUT
         echo "sidekiq-image=$SIDEKIQ_IMAGE" >> $GITHUB_OUTPUT
