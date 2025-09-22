@@ -12,7 +12,10 @@ if Rails.env.production?
       def call(command)
         # Ignora comando CLIENT SETNAME que causa problemas no Memorystore
         if command.is_a?(Array) && command.first.to_s.upcase == 'CLIENT' && command[1].to_s.upcase == 'SETNAME'
-          Rails.logger.debug "Ignoring CLIENT SETNAME command for Memorystore compatibility"
+          # Log apenas se Rails estiver disponível
+          if defined?(Rails) && Rails.respond_to?(:logger)
+            Rails.logger.debug "Ignoring CLIENT SETNAME command for Memorystore compatibility"
+          end
           return 'OK'
         end
 
