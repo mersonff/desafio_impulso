@@ -150,7 +150,7 @@ jobs:
           --vpc-connector=desafio-impulso-vpc \
           --memory=512Mi \
           --cpu=1 \
-          --min-instances=0 \
+          --min-instances=1 \
           --max-instances=3 \
           --port=8080
 
