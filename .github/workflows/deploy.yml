@@ -128,7 +128,8 @@ jobs:
           --region=$REGION \
           --platform=managed \
           --allow-unauthenticated \
-          --set-env-vars="RAILS_ENV=production,RAILS_SERVE_STATIC_FILES=true,RAILS_LOG_TO_STDOUT=true,DATABASE_URL=$DATABASE_URL,SECRET_KEY_BASE=$SECRET_KEY_BASE" \
+          --set-env-vars="RAILS_ENV=production,RAILS_SERVE_STATIC_FILES=true,RAILS_LOG_TO_STDOUT=true,DATABASE_URL=$DATABASE_URL,SECRET_KEY_BASE=$SECRET_KEY_BASE,REDIS_URL=$REDIS_URL" \
+          --vpc-connector=desafio-impulso-vpc \
           --memory=1Gi \
           --cpu=1 \
           --min-instances=0 \
