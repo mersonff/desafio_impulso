@@ -5,12 +5,17 @@ class CalculateDiscountJob
 
   sidekiq_options retry: false
 
-  def perform(salary)
+  def perform(salary, job_id, user_id)
     result = Proponent.calculate_inss_discount(salary)
 
     ActionCable.server.broadcast(
-      "WorkerChannel",
-      { inss_discount: result },
+      "discount_calculation_#{user_id}",
+      {
+        job_id: job_id,
+        status: "completed",
+        inss_discount: result,
+        message: "Desconto calculado com sucesso!"
+      }
     )
   end
 end

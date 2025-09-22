@@ -142,20 +142,16 @@ class ProponentsController < ApplicationController
 
   def calculate_inss_discount
     salary = params[:salary]
-    discount = Proponent.calculate_inss_discount(salary)
+    job_id = SecureRandom.uuid
 
-    # Envia o cálculo para o job em segundo plano para atualização futura
-    begin
-      CalculateDiscountJob.perform_async(salary) if ENV['REDIS_URL'].present?
-    rescue Redis::CannotConnectError => e
-      Rails.logger.warn "Redis not available: #{e.message}"
-    end
+    CalculateDiscountJob.perform_async(salary, job_id, current_user.id)
 
     respond_to do |format|
       format.json do
         render(json: {
-          inss_discount: discount,
-          message: "Desconto calculado com sucesso",
+          status: "processing",
+          job_id: job_id,
+          message: "Calculando desconto...",
         })
       end
     end

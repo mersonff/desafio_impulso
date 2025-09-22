@@ -44,7 +44,7 @@
         | Dados Financeiros
 
     .col-md-6
-      = form.input :salary, as: :string, input_html: { data: { controller: 'mask calculate-discount', mask_type_value: "currency", action: "input->calculate-discount#calculate" }, class: 'form-control-lg' }
+      = form.input :salary, as: :string, input_html: { data: { controller: 'mask calculate-discount', mask_type_value: "currency", action: "input->calculate-discount#calculate", calculate_discount_user_id_value: current_user.id }, class: 'form-control-lg' }
 
     .col-md-6
       = form.input :inss_discount, as: :string, readonly: true, input_html: { data: { controller: 'mask', mask_type_value: "currency" }, class: 'form-control-lg bg-light' }
